@@ -1,23 +1,35 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString, Min, Max } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateOfferDto {
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Max(100)
-  discountPercentage?: number;
+    @ApiProperty({
+        description: 'Porcentaje de descuento de la oferta',
+        example: 15,
+    })
+    @IsOptional()
+    @IsNumber()
+    percentage?: number;
 
-  @IsOptional()
-  @IsString()
-  productId?: string;
+    @ApiProperty({
+        description: 'Fecha de expiración de la oferta',
+        example: '2024-12-31',
+    })
+    @IsOptional()
+    dueDate?: Date;
 
-  @IsOptional()
-  @IsString()
-  categoryId?: string;
+    @ApiProperty({
+        description: 'ID del producto al que se aplica la oferta',
+        example: 'uuid_de_producto',
+    })
+    @IsOptional()
+    @IsString()
+    productId?: string;
 
-  @IsOptional()
-  startDate?: Date;
-
-  @IsOptional()
-  endDate?: Date;
+    @ApiProperty({
+        description: 'ID de la categoría a la que se aplica la oferta',
+        example: 'uuid_de_categoria',
+    })
+    @IsOptional()
+    @IsString()
+    categoryId?: string;
 }
