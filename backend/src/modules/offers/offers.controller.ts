@@ -8,7 +8,7 @@ export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
   @Post()
-  create(@Body() createOfferDto: CreateOfferDto) {
+  async create(@Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(createOfferDto);
   }
 
@@ -19,16 +19,16 @@ export class OffersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.offersService.findOne(+id);
+    return this.offersService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOfferDto: UpdateOfferDto) {
-    return this.offersService.update(+id, updateOfferDto);
+    return this.offersService.update(id, updateOfferDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.offersService.remove(+id);
+  delete(@Param('id') id: string) {
+    return this.offersService.delete(id);
   }
 }
