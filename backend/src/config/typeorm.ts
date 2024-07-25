@@ -6,21 +6,19 @@ import { Order } from 'src/modules/orders/entities/order.entity';
 import { OrderDetail } from 'src/modules/orders/entities/orderDetail.entity';
 import { Category } from 'src/modules/categories/entities/category.entity';
 import { config as dotenvConfig } from 'dotenv';
+import { Offer } from 'src/modules/offers/entities/offer.entity';
+
 dotenvConfig({ path: '.env.development' });
 
 const config = {
-  type: 'postgres',
-  database: process.env.DB_NAME,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  entities: [User, Product, Order, OrderDetail],
-  migrations: ['dist/migrations/*{.ts, .js}'],
-  autoLoadEntities: true,
-  logging: ['error'],
-  synchronize: true,
-  dropSchema: true,
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    entities: [User, Product, Order, OrderDetail, Category, Offer],
+    migrations: ['dist/migrations/*{.ts,.js}'],
+    autoLoadEntities: true,
+    logging: ['error'],
+    synchronize: true,
+    dropSchema: true,
 };
 export const typeOrmConfig = registerAs('typeorm', () => config);
 export const conectionSource = new DataSource(config as DataSourceOptions);
