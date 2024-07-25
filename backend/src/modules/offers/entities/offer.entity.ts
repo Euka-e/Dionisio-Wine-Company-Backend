@@ -8,7 +8,7 @@ export class Offer {
     @PrimaryGeneratedColumn('uuid')
     offerId?: string
 
-    @Column({ type: 'number', nullable: false })
+    @Column({ type: 'numeric', nullable: false })
     percentage: number
 
     @Column({ type: 'date', nullable: false })
