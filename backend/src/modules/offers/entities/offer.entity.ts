@@ -14,7 +14,7 @@ export class Offer {
     @Column({ type: 'date', nullable: false })
     dueDate: Date
 
-    @OneToOne(() => Product, (product) => product.offer)
+    @OneToOne(() => Product, (product) => product.offers)
     product: Product;
 
     @OneToOne(() => Category, (category) => category.offer)
