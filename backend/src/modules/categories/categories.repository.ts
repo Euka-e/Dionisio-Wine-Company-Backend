@@ -5,8 +5,6 @@ import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-import * as fakeProd from '../../utils/fakeProducts.json';
-
 @Injectable()
 export class CategoryRepository {
   constructor(
