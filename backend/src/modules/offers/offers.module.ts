@@ -5,9 +5,10 @@ import { OffersController } from './offers.controller';
 import { Offer } from './entities/offer.entity';
 import { Product } from '../products/entities/product.entity';
 import { OffersRepository } from './offers.repository';
+import { Category } from '../categories/entities/category.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Offer, Product])],
+  imports: [TypeOrmModule.forFeature([Offer, Product, Category])],
   controllers: [OffersController],
   providers: [OffersService, OffersRepository],
 })

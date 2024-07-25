@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryRepository } from './categories.repository';
 
 @Injectable()
 export class CategoriesService {
+  constructor(private readonly categoryRepository: CategoryRepository) {}
+
+  findAll(page: number, limit: number) {
+    return this.categoryRepository.findAll(page, limit);
+  }
+
+  findOne(category_id: string) {
+    return this.categoryRepository.findOne(category_id);
+  }
   create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+    return this.categoryRepository.create(createCategoryDto);
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  //? Posiblemente este endpoint sea redundante/inutil
+  update(category_id: string, updateCategoryDto: UpdateCategoryDto) {
+    return this.categoryRepository.update(category_id, updateCategoryDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  remove(category_id: string) {
+    return this.categoryRepository.remove(category_id);
   }
 }
