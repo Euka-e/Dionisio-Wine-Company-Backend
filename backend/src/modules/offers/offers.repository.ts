@@ -20,7 +20,7 @@ export class OffersRepository{
       ) {}
     
       async create(createOfferDto: CreateOfferDto): Promise<Offer[]> {
-        const { percentage, productId, categoryId} = createOfferDto;
+        const { percentage, productId, categoryId, dueDate } = createOfferDto;
     
         if (!productId && !categoryId) {
           throw new BadRequestException('Either productId or categoryId must be provided');
@@ -37,24 +37,26 @@ export class OffersRepository{
     
           const offer = this.offerRepository.create({
             percentage,
-            productId
+            dueDate,
+            product,
           });
           offers.push(await this.offerRepository.save(offer));
         }
     
         if (categoryId) {
-          const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+          const category = await this.categoryRepository.findOne({ where: { categoryId } });
           if (!category) {
             throw new NotFoundException(`Category with id ${categoryId} not found`);
           }
-          const products = await this.productsRepository.find({ where: { category: category } });
+          const products = await this.productsRepository.find({ where: { category } });
           for (const product of products) {
             product.price = product.price * (1 - percentage / 100);
             await this.productsRepository.save(product);
     
             const offer = this.offerRepository.create({
               percentage,
-              productId: product.id
+              dueDate,
+              product,
             });
             offers.push(await this.offerRepository.save(offer));
           }
@@ -68,7 +70,7 @@ export class OffersRepository{
       }
 
       async findOne(id: string): Promise<Offer> {
-        const offer = await this.offerRepository.findOne({ where: { id } });
+        const offer = await this.offerRepository.findOne({  where: { offerId: id }, relations: ['product', 'category'] });
         if (!offer) {
           throw new NotFoundException(`Offer with id ${id} not found`);
         }
@@ -76,7 +78,7 @@ export class OffersRepository{
       }
 
       async update(id: string, updateOfferDto: UpdateOfferDto): Promise<Offer> {
-        const offer = await this.offerRepository.findOne({ where: { id } });
+        const offer = await this.offerRepository.findOne({ where: { offerId: id }, relations: ['product', 'category'] });
         if (!offer) {
           throw new NotFoundException(`Offer with id ${id} not found`);
         }
@@ -92,11 +94,11 @@ export class OffersRepository{
         }
     
         if (categoryId) {
-          const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+          const category = await this.categoryRepository.findOne({ where: { categoryId } });
           if (!category) {
             throw new NotFoundException(`Category with id ${categoryId} not found`);
           }
-          const products = await this.productsRepository.find({ where: { category: category } });
+          const products = await this.productsRepository.find({ where: { category } });
           for (const product of products) {
             product.price = product.price * (1 - percentage / 100);
             await this.productsRepository.save(product);
