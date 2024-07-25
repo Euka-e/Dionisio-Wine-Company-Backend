@@ -15,7 +15,7 @@ export class Product {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @Column({ length: 50, nullable: false })
+  @Column({ length: 50, nullable: false, unique: true })
   name: string;
 
   @Column({ type: 'text', nullable: false })
