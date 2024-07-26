@@ -1,19 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { CreateProductDto } from './dto/create-product.dto';
 
 @Injectable()
 export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
-    private readonly productsRepository: Repository<Product>,
-  ) {}
+    private readonly productsRepository: Repository<Product>
+  ) { }
 
   async findAll(page: number, limit: number) {
-    let products = await this.productsRepository.find();
+    let products = await this.productsRepository.find({ relations: { category: true } });
 
     const start = (page - 1) * limit;
     const end = start + limit;
@@ -23,38 +22,26 @@ export class ProductsRepository {
   }
 
   async findOne(products_id: string) {
-    const product = await this.productsRepository.findOneBy({
-      id: products_id,
-    });
+    try {
+      const product = await this.productsRepository.findOneBy({
+        id: products_id,
+      });
+      return product;
+    } catch (error) {
+      throw new NotFoundException(`El producto con el id ${products_id} no pudo ser encontrado.`)
+    }
 
-    return product;
   }
 
-  async create(createProductDto: CreateProductDto) {
-    const product = new Product();
-
-    product.name = createProductDto.name;
-    product.description = createProductDto.description;
-    product.price = createProductDto.price;
-    product.stock = createProductDto.stock;
-    product.imgUrl = createProductDto.imgUrl;
-    product.type = createProductDto.type;
-    product.store = createProductDto.store;
-
-    //* Verificar como se va a manejar la logica de Category
-
-    await this.productsRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Product)
-      .values(product)
-      .orUpdate(
-        ['description', 'price', 'stock', 'imgUrl', 'type', 'store'],
-        ['name'],
-      )
-      .execute();
-
-    return 'Producto agregado';
+  async create(product: Product) {
+    try {
+      const newProduct = await this.productsRepository.save(product)
+      const findProduct = await this.productsRepository.findOneBy({ id: newProduct.id })
+      return { message: 'Producto añadido', findProduct };
+    } catch (error) {
+      console.error('Error al añadir el producto', error.message)
+      throw new InternalServerErrorException('No se pudo añadir el producto.')
+    }
   }
 
   async update(products_id: string, updateProductDto: UpdateProductDto) {

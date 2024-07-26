@@ -60,8 +60,6 @@ export class Product {
     description: 'Type of the product (Cepa)',
     example: 'wine'
   })
-  @Column({ type: 'text', nullable: false })
-  type: string; //? Cepa
 
   @ApiProperty({
     description: 'Store where the product is available (Bodega)',
@@ -82,7 +80,7 @@ export class Product {
     type: () => Category
   })
   @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+  category: Category; //? Cepa
 
   @ApiProperty({
     description: 'Order details associated with the product',

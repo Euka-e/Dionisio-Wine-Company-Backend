@@ -81,6 +81,7 @@ web_modules/
 
 # dotenv environment variable files
 .env.develop
+.env.development
 .env.development.local
 .env.test.local
 .env.production.local
@@ -143,3 +144,5 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+
+package-lock.json
