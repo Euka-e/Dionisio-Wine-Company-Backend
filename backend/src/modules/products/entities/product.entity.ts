@@ -31,16 +31,13 @@ export class Product {
   imgUrl: string;
 
   @Column({ type: 'text', nullable: false })
-  type: string; //? Cepa
-
-  @Column({ type: 'text', nullable: false })
   store: string; //? Bodega
 
   @OneToOne(() => Offer, (offer) => offer.product)
   offers: Offer;
 
   @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+  category: Category; //? Cepa
 
   @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)
   orderDetails?: OrderDetail[];
