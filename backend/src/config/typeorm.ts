@@ -14,7 +14,7 @@ const config = {
     type: 'postgres',
     port: process.env.DB_PORT,
     url: process.env.DATABASE_URL,
-    ssl: process.env.DB_SSL,
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     entities: [User, Product, Order, OrderDetail, Category, Offer],
     migrations: ['dist/migrations/*{.ts,.js}'],
     autoLoadEntities: true,
