@@ -20,7 +20,7 @@ const config = {
     logging: ['error'],
     synchronize: true,
     dropSchema: false,
-    ssl: true
+    ssl: false
 };
 export const typeOrmConfig = registerAs('typeorm', () => config);
 export const conectionSource = new DataSource(config as DataSourceOptions);
