@@ -7,6 +7,10 @@ import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+
+@Module({
+  imports: [UsersModule, ProductsModule, AuthModule, OrdersModule, CategoriesModule, ConfigModule.forRoot()],
+=======
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { OffersModule } from './modules/offers/offers.module';
 import { typeOrmConfig } from './config/typeorm';
@@ -28,7 +32,6 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     CategoriesModule,
     OrdersModule,
-    FileUploadModule,
     OffersModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
