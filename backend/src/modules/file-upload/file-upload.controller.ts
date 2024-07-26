@@ -2,8 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { FileUploadService } from './file-upload.service';
 import { CreateFileUploadDto } from './dto/create-file-upload.dto';
 import { UpdateFileUploadDto } from './dto/update-file-upload.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('file-upload')
+@ApiTags('File-upload')
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
