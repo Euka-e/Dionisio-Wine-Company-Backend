@@ -2,9 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, /* UseGuards */ } fr
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ApiTags } from '@nestjs/swagger';
 /* import { AuthorizationGuard } from '../auth/guards/authorization.guard' */
 
 @Controller('orders')
+@ApiTags('Orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
