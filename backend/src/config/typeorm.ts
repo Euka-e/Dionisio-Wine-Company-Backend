@@ -12,6 +12,7 @@ dotenvConfig({ path: '.env.development' });
 
 const config = {
     type: 'postgres',
+    port: process.env.DB_PORT,
     url: process.env.DATABASE_URL,
     entities: [User, Product, Order, OrderDetail, Category, Offer],
     migrations: ['dist/migrations/*{.ts,.js}'],
@@ -19,6 +20,7 @@ const config = {
     logging: ['error'],
     synchronize: true,
     dropSchema: false,
+    ssl: true
 };
 export const typeOrmConfig = registerAs('typeorm', () => config);
 export const conectionSource = new DataSource(config as DataSourceOptions);
