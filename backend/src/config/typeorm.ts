@@ -14,13 +14,14 @@ const config = {
     type: 'postgres',
     port: process.env.DB_PORT,
     url: process.env.DATABASE_URL,
+    ssl: process.env.DB_SSL,
     entities: [User, Product, Order, OrderDetail, Category, Offer],
     migrations: ['dist/migrations/*{.ts,.js}'],
     autoLoadEntities: true,
     logging: ['error'],
     synchronize: true,
     dropSchema: false,
-    ssl: false
+    
 };
 export const typeOrmConfig = registerAs('typeorm', () => config);
 export const conectionSource = new DataSource(config as DataSourceOptions);
