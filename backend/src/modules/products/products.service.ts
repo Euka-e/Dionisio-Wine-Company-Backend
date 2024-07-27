@@ -5,24 +5,24 @@ import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly productsRepository: ProductsRepository) { }
+  constructor(private readonly productsRepository: ProductsRepository) {}
   findAll(page: number, limit: number) {
     return this.productsRepository.findAll(page, limit);
   }
 
-  findOne(products_id: string) {
-    return this.productsRepository.findOne(products_id);
+  findOne(product_id: string) {
+    return this.productsRepository.findOne(product_id);
   }
 
   create(product: Product) {
     return this.productsRepository.create(product);
   }
 
-  update(products_id: string, updateProductDto: UpdateProductDto) {
-    return this.productsRepository.update(products_id, updateProductDto);
+  update(product_id: string, updateProductDto: UpdateProductDto) {
+    return this.productsRepository.update(product_id, updateProductDto);
   }
 
-  remove(products_id: string) {
-    return this.productsRepository.remove(products_id);
+  remove(product_id: string) {
+    return this.productsRepository.remove(product_id);
   }
 }
