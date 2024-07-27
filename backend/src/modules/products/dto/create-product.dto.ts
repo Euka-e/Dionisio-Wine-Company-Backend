@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsPositive, IsOptional, IsUrl, IsBoolean } from 'class-validator';
+import { Category } from '../../categories/entities/category.entity';
+import { Offer } from '../../offers/entities/offer.entity';
+import { OrderDetail } from '../../orders/entities/orderDetail.entity';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -40,17 +43,9 @@ export class CreateProductDto {
     description: 'The image URL of the product',
     example: 'https://example.com/images/red-wine.jpg'
   })
+  @IsUrl()
   @IsNotEmpty()
-  @IsString()
   imgUrl: string;
-
-  @ApiProperty({
-    description: 'The type of the product',
-    example: 'wine'
-  })
-  @IsNotEmpty()
-  @IsString()
-  type: string;
 
   @ApiProperty({
     description: 'The store where the product is available',
@@ -59,15 +54,33 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   store: string;
-}
 
-//lo dejo por las dudas
-/* export class CreateProductDto {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  imgUrl: string;
-  type: string;
-  store: string;
-} */
+  @ApiProperty({
+    description: 'Active status of the product',
+    example: true
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @ApiProperty({
+    description: 'Offer associated with the product',
+    type: () => Offer
+  })
+  @IsOptional()
+  offers?: Offer;
+
+  @ApiProperty({
+    description: 'Category of the product',
+    type: () => Category
+  })
+  @IsOptional()
+  category: Category;
+
+  @ApiProperty({
+    description: 'Order details associated with the product',
+    type: () => [OrderDetail]
+  })
+  @IsOptional()
+  orderDetails?: OrderDetail[];
+}

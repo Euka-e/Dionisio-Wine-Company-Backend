@@ -68,12 +68,15 @@ export class Product {
   @Column({ type: 'text', nullable: false })
   store: string; //? Bodega
 
+  @Column('boolean', { default: true })
+  isActive?: boolean
+
   @ApiProperty({
     description: 'Offer associated with the product',
     type: () => Offer
   })
   @OneToOne(() => Offer, (offer) => offer.product)
-  offers: Offer;
+  offers?: Offer;
 
   @ApiProperty({
     description: 'Category of the product',
