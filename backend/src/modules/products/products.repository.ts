@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -23,14 +23,18 @@ export class ProductsRepository {
 
   async findOne(products_id: string) {
     try {
-      const product = await this.productsRepository.findOneBy({
-        id: products_id,
-      });
+      const options: FindOneOptions<Product> = {
+        where: { id: products_id },
+        relations: ['categories'],
+      };
+      const product = await this.productsRepository.findOne(options);
+      if (!product) {
+        throw new NotFoundException(`El producto con el id ${products_id} no pudo ser encontrado.`);
+      }
       return product;
     } catch (error) {
-      throw new NotFoundException(`El producto con el id ${products_id} no pudo ser encontrado.`)
+      throw new NotFoundException(`El producto con el id ${products_id} no pudo ser encontrado.`);
     }
-
   }
 
   async create(product: Product) {

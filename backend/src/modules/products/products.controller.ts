@@ -11,6 +11,7 @@ import {
 import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Controller('products')
 @ApiTags('Products')
@@ -31,7 +32,7 @@ export class ProductsController {
     return this.productsService.findOne(products_id);
   }
   @Post()
-  create(@Body() product) {
+  create(@Body() product: CreateProductDto) {
     return this.productsService.create(product);
   }
 
