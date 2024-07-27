@@ -3,15 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './modules/products/products.module';
-import { UsersModule } from './modules/users/users.module'
+import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CategoriesModule } from './modules/categories/categories.module';
-
-@Module({
-  imports: [UsersModule, ProductsModule, AuthModule, OrdersModule, CategoriesModule, ConfigModule.forRoot()],
-=======
-import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { OffersModule } from './modules/offers/offers.module';
 import { typeOrmConfig } from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -21,11 +16,12 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [typeOrmConfig]
+      load: [typeOrmConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => configService.get('typeorm')
+      useFactory: (configService: ConfigService) =>
+        configService.get('typeorm'),
     }),
     ProductsModule,
     UsersModule,
@@ -36,10 +32,10 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       global: true,
-      signOptions: { expiresIn: '1440m' }
+      signOptions: { expiresIn: '1440m' },
     }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
