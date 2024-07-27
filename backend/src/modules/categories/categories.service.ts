@@ -18,12 +18,4 @@ export class CategoriesService {
     return this.categoryRepository.create(createCategoryDto);
   }
 
-  //? Posiblemente este endpoint sea redundante/inutil
-  update(category_id: string, updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryRepository.update(category_id, updateCategoryDto);
-  }
-
-  remove(category_id: string) {
-    return this.categoryRepository.remove(category_id);
-  }
 }
