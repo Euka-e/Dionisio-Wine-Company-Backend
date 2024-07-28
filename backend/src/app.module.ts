@@ -34,8 +34,13 @@ import { JwtModule } from '@nestjs/jwt';
       global: true,
       signOptions: { expiresIn: '1440m' },
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env.development',
+    }),
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

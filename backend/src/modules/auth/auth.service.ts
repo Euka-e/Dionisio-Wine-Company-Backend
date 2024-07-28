@@ -11,7 +11,7 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) { }
 
-  async signIn(email: string, password: string): Promise<{ message: string; token: string }> {
+  async signIn(email: string, password: string) {
     const user = await this.usersRepository.getUserByEmail(email);
     if (!user) {
       throw new BadRequestException("Correo o contraseña incorrectos");
@@ -27,7 +27,7 @@ export class AuthService {
     return { message: 'Usuario logueado', token };
   }
 
-  async signUp(user: Partial<User>) {
+  async signUp(user: User) {
     const { email, password } = user;
     const findUser = await this.usersRepository.getUserByEmail(email);
     if (findUser) throw new BadRequestException(`El email ${email} ya se encuentra registrado`);
@@ -35,21 +35,10 @@ export class AuthService {
     return await this.usersRepository.createUser({ ...user, password: encryptedPassword });
   }
 
-  async signInWithAuth0(auth0User: Partial<User>): Promise<{ message: string; token: string }> {
-    const { email } = auth0User;
-    if (!email) {
-      throw new BadRequestException("El email es obligatorio");
-    }
-    let user = await this.usersRepository.getUserByEmail(email);
-    if (!user) {
-      user = await this.signUp({
-        email: email,
-        password: '',
-      });
-    }
-
-    const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
-    const token = this.jwtService.sign(payload);
-    return { message: 'Usuario logueado con Auth0', token };
+  async signInWithAuth0(user: Partial<User>) {
+    const payload = { sub: user.id, email: user.email.valueOf };
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
   }
 }

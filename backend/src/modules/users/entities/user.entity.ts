@@ -10,7 +10,7 @@ export class User {
         example: 'b0c0c16d-fcb0-4b89-9d1a-6d09ec6b5de5'
     })
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id?: string;
 
     @ApiProperty({
         description: 'Name of the user',
@@ -84,5 +84,5 @@ export class User {
         type: () => [Order]
     })
     @OneToMany(() => Order, order => order.user)
-    orders: Order[];
+    orders?: Order[];
 }

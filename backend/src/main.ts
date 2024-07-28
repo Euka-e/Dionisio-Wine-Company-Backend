@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,14 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true,
   }));
+  
+  app.use(
+    session({
+      secret: process.env.JWT_SECRET,
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
   await app.listen(3000);
   console.log('Aplication running on port 3000')
 }
