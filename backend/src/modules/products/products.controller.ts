@@ -16,7 +16,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 @Controller('products')
 @ApiTags('Products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get()
   async findAll(
@@ -28,8 +28,8 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') products_id: string) {
-    return this.productsService.findOne(products_id);
+  findOne(@Param('id') product_id: string) {
+    return this.productsService.findOne(product_id);
   }
   @Post()
   create(@Body() product: CreateProductDto) {
@@ -38,14 +38,14 @@ export class ProductsController {
 
   @Patch(':id')
   update(
-    @Param('id') products_id: string,
+    @Param('id') product_id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
-    return this.productsService.update(products_id, updateProductDto);
+    return this.productsService.update(product_id, updateProductDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') products_id: string) {
-    return this.productsService.remove(products_id);
+  remove(@Param('id') product_id: string) {
+    return this.productsService.remove(product_id);
   }
 }
