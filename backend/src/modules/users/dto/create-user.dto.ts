@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, Length, Matches, IsString, IsNumber, IsEmpty } from 'class-validator';
+import { Order } from 'src/modules/orders/entities/order.entity';
 
 
 export class CreateUserDto {
@@ -88,6 +89,8 @@ export class CreateUserDto {
     })
     @IsEmpty()
     isAdmin?: boolean;
+
+    orders?: Order[]
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) { }
