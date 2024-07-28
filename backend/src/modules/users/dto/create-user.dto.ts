@@ -53,7 +53,7 @@ export class CreateUserDto {
     })
     @IsNotEmpty()
     @IsNumber()
-    phone: number;
+    phone: string;
 
     @ApiProperty({
         description: 'Country of the user',

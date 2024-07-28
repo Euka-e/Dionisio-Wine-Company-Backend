@@ -5,9 +5,9 @@ import { CategoryRepository } from './categories.repository';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(private readonly categoryRepository: CategoryRepository) { }
 
-  findAll(page: number, limit: number) {
+  findAll(page: number = 1, limit: number = 10) {
     return this.categoryRepository.findAll(page, limit);
   }
 

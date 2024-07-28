@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
 import { Order } from "src/modules/orders/entities/order.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
@@ -36,8 +37,11 @@ export class User {
         description: 'Phone number of the user',
         example: 1234567890
     })
-    @Column('int')
-    phone: number;
+    @IsString()
+    @IsNotEmpty()
+    @Matches(/^[+]?[0-9\s\-().]+$/, { message: 'Invalid phone number' })
+    @Column({ length: 20 })
+    phone: string;
 
     @ApiProperty({
         description: 'Country of the user',
