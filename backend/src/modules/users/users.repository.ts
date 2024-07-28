@@ -12,18 +12,21 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersRepository {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
-  async getUsers(page: number, limit: number) {
+  async getUsers(page: number = 1, limit: number = 10) {
     try {
-      const skip = (page - 1) * limit;
-      const users = await this.usersRepository.find({
+      const [users, total] = await this.usersRepository.findAndCount({
         take: limit,
-        skip: skip,
-      });
-      return users.map(
-        ({ password, ...userWithoutPassword }) => userWithoutPassword,
-      );
+        skip: (page - 1) * limit,
+      })
+      const filteredUsers = users.map(({ password, ...userWithoutPassword }) => userWithoutPassword)
+      return {
+        data: filteredUsers,
+        total,
+        page,
+        lastPage: Math.ceil(total / limit)
+      }
     } catch (error) {
       console.error('Error obteniendo los usuarios:', error);
       throw new InternalServerErrorException(

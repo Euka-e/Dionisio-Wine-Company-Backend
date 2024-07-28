@@ -6,23 +6,16 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('categories')
 @ApiTags('Categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) { }
 
   @Get()
-  findAll(
+  async findAll(
     @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
+    @Query('limit') limit: string = '10'
   ) {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
-
-    if (isNaN(pageNumber) || isNaN(limitNumber)) {
-      throw new Error(
-        'Provided "page" or "limit" value is not a number. Please provide numeric values.',
-      );
-    }
-
-    return this.categoriesService.findAll(pageNumber, limitNumber);
+    return this.categoriesService.findAll(pageNumber, limitNumber)
   }
 
   @Get(':id')

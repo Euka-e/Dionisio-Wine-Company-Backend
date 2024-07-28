@@ -16,15 +16,16 @@ import { CreateProductDto } from './dto/create-product.dto';
 @Controller('products')
 @ApiTags('Products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService) { }
 
   @Get()
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
   ) {
-    if (page && limit) return this.productsService.findAll(page, limit);
-    return this.productsService.findAll(page, limit);
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.productsService.findAll(pageNumber, limitNumber);
   }
 
   @Get(':id')

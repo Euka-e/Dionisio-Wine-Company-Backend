@@ -16,11 +16,16 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.usersService.findAll(page, limit);
+  async findAll(
+    @Query('page') page: string = "1",
+    @Query('limit') limit: string = "10"
+  ) {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.usersService.findAll(pageNumber, limitNumber);
   }
 
   @Get(':id')

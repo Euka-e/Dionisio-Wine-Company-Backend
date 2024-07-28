@@ -6,7 +6,8 @@ import { UsersRepository } from './users.repository';
 @Injectable()
 export class UsersService {
   constructor(private readonly UsersRepository: UsersRepository) {}
-  findAll(page: number, limit: number) {
+  
+  findAll(page: number = 1, limit: number = 10) {
     return this.UsersRepository.getUsers(page, limit);
   }
 

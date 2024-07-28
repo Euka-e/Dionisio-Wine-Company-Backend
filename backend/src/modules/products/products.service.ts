@@ -5,8 +5,9 @@ import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly productsRepository: ProductsRepository) {}
-  findAll(page: number, limit: number) {
+  constructor(private readonly productsRepository: ProductsRepository) { }
+
+  findAll(page: number = 1, limit: number = 10) {
     return this.productsRepository.findAll(page, limit);
   }
 

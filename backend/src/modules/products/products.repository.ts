@@ -13,18 +13,20 @@ export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-  ) {}
+  ) { }
 
-  async findAll(page: number, limit: number) {
-    let products = await this.productsRepository.find({
+  async findAll(page: number = 1, limit: number = 10) {
+    const [products, total] = await this.productsRepository.findAndCount({
       relations: { category: true },
+      take: limit,
+      skip: (page - 1) * limit,
     });
-
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    products = products.slice(start, end);
-
-    return products;
+    return {
+      data: products,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   async findOne(product_id: string) {
