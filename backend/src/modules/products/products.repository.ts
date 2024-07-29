@@ -13,7 +13,7 @@ export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-  ) { }
+  ) {}
 
   async findAll(page: number = 1, limit: number = 10) {
     const [products, total] = await this.productsRepository.findAndCount({
@@ -33,18 +33,20 @@ export class ProductsRepository {
     try {
       const options: FindOneOptions<Product> = {
         where: { id: product_id },
-        relations: ['categories'],
+        relations: ['category'],
       };
+
       const product = await this.productsRepository.findOne(options);
+
       if (!product) {
         throw new NotFoundException(
-          `El producto con el id ${product_id} no pudo ser encontrado.`,
+          `El producto con el id ${product_id} no pudo ser encontrado. ERROR PRIMER IF`,
         );
       }
       return product;
     } catch (error) {
       throw new NotFoundException(
-        `El producto con el id ${product_id} no pudo ser encontrado.`,
+        `El producto con el id ${product_id} no pudo ser encontrado. ERROR DEL CATCH`,
       );
     }
   }
