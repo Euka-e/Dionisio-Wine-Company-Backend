@@ -64,12 +64,8 @@ export class User {
     @Column({ length: 50 })
     city: string;
 
-    @ApiProperty({
-        description: 'Birthdate of the user in the format yyyy-mm-dd',
-        example: '1990-01-01'
-    })
     @Column()
-    date: Date;
+    date: Date
 
     @ApiProperty({
         description: 'Indicates if the user has admin privileges',
