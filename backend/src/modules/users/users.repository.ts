@@ -41,16 +41,21 @@ export class UsersRepository {
     }
   }
 
-  async getUserByEmail(email: string) {
+  async findByEmail(email: string) {
 
-    const user = await this.usersRepository.findOneBy({ email });
-    if (!user) {
-      return null;
+    try {
+      const user = await this.usersRepository.findOneBy({ email });
+      if (!user) {
+        return null;
+      }
+      return user;
+    } catch (error) {
+      throw new NotFoundException(`No se encontró el usuario con el email ${email}`);
     }
-    return user;
+
   }
 
-  async createUser(user: any) {
+  async createUser(user: CreateUserDto) {
     try {
       if (typeof user.date === 'string') {
         user.date = new Date(user.date);
@@ -58,7 +63,7 @@ export class UsersRepository {
 
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
-      const { password, isAdmin, ...finalUser } = findUser;
+      const { isAdmin, ...finalUser } = findUser;
       return finalUser;
     } catch (error) {
       console.error('Error creando usuario:', error.message);

@@ -13,6 +13,12 @@ export class AuthController {
   getAuth() {
     return this.authService.getAuth();
   }
+
+  @Post('user')
+  async handleUser(@Body() userDto: CreateUserDto) {
+    return await this.authService.handleUser(userDto);
+  }
+
   @Post('signin')
   signIn(@Body() credentials: LoginUserDto) {
     const { email, password } = credentials;

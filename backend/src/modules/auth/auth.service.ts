@@ -1,3 +1,4 @@
+import { UsersService } from './../users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from 'src/modules/users/entities/user.entity';
 import { UsersRepository } from 'src/modules/users/users.repository';
@@ -9,15 +10,24 @@ import { CreateUserDto } from '../users/dto/user.dto';
 export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService
   ) { }
   getAuth() {
     return "Todas las credenciales..."
   }
 
+  async handleUser(userDto: CreateUserDto) {
+    let user = await this.usersService.findByEmail(userDto.email);
+    if (!user) {
+      user = await this.usersService.createUser(userDto);
+    }
+    return user;
+  }
+
   async signIn(email: string, password: string) {
 
-    const user = await this.usersRepository.getUserByEmail(email);
+    const user = await this.usersRepository.findByEmail(email);
     if (!user) throw new BadRequestException("Correo o contraseña incorrectos")
 
     const validPassword = await bcrypt.compare(password, user.password)
@@ -30,7 +40,7 @@ export class AuthService {
   async signUp(user: CreateUserDto) {
     const { email, password } = user;
 
-    const findUser = await this.usersRepository.getUserByEmail(email);
+    const findUser = await this.usersRepository.findByEmail(email);
     if (findUser) throw new BadRequestException(`El email ${email} ya se encuentra registrado`);
 
     const encryptedPassword = await bcrypt.hash(password, 10);
