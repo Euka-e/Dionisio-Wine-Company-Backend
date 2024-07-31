@@ -1,5 +1,5 @@
 import { AuthGuard } from '../auth/guards/authorization.guard';
-import { Body, Controller, Get, Post, Put, Param, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Param, Delete, Query, UseGuards, ParseUUIDPipe, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -32,7 +32,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(AuthGuard)
   updateUser(@Param('id', ParseUUIDPipe) id: string, @Body() user: UpdateUserDto) {
     return this.usersService.updateUser(id, user);
