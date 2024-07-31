@@ -16,7 +16,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 @Controller('products')
 @ApiTags('Products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get()
   async findAll(
