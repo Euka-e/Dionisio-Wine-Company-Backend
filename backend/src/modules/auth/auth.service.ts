@@ -3,6 +3,7 @@ import { User } from 'src/modules/users/entities/user.entity';
 import { UsersRepository } from 'src/modules/users/users.repository';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,11 +27,21 @@ export class AuthService {
     const token = this.jwtService.sign(payload)
     return { message: 'Usuario logueado', token }
   }
-  async signUp(user: Partial<User>) {
+  async signUp(user: CreateUserDto) {
     const { email, password } = user;
-    const findUser = await this.usersRepository.getUserByEmail(email)
+
+    const findUser = await this.usersRepository.getUserByEmail(email);
     if (findUser) throw new BadRequestException(`El email ${email} ya se encuentra registrado`);
-    const encryptedPassword = await bcrypt.hash(password, 10)
-    return await this.usersRepository.createUser({ ...user, password: encryptedPassword })
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    const date = new Date(user.date);
+
+    const newUser = {
+      ...user,
+      date: user.date,
+      password: encryptedPassword
+    };
+    return await this.usersRepository.createUser(newUser);
   }
 }
