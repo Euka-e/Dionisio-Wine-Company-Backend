@@ -7,18 +7,25 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/create-product.dto';
+import { AuthGuard } from '../auth/guards/authorization.guard';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from '../users/dto/roles.enum';
 
 @Controller('products')
 @ApiTags('Products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  //! Si el usuario puede comprar productos sin tener una cuenta, entonces la guarda aca puede dar conflictos
   @Get()
+  @UseGuards(AuthGuard)
   async findAll(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
@@ -33,11 +40,15 @@ export class ProductsController {
     return this.productsService.findOne(product_id);
   }
   @Post()
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   create(@Body() product: CreateProductDto) {
     return this.productsService.create(product);
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   update(
     @Param('id') product_id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -46,6 +57,8 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Roles(Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id') product_id: string) {
     return this.productsService.remove(product_id);
   }

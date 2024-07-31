@@ -1,4 +1,3 @@
-import { AuthGuard } from '../auth/guards/authorization.guard';
 import {
   Body,
   Controller,
@@ -16,6 +15,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from './dto/roles.enum';
+import { AuthGuard } from '../auth/guards/authorization.guard';
 import { RolesGuard } from 'src/modules/auth/guards/role.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -26,8 +26,8 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // @UseGuards(AuthGuard, RolesGuard)
   getUsers(@Query('page') page: string, @Query('limit') limit: string) {
     !page ? (page = '1') : page;
     !limit ? (limit = '5') : limit;
