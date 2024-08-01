@@ -1,5 +1,5 @@
 import { ApiHideProperty, ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, Length, Matches, IsString, IsNumber, Validate, IsEmpty, IsDateString, IsBoolean, IsOptional, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, Matches, IsString, IsNumber, Validate, IsEmpty, IsDateString, IsBoolean, IsOptional, MaxLength} from 'class-validator';
 import { PasswordMatch } from '../../../decorators/passwordMatch.decorator';
 
 export class CreateUserDto {
@@ -97,9 +97,9 @@ export class CreateUserDto {
     @Matches(/^\d{2}\/\d{2}\/\d{4}$/, { message: 'La fecha debe estar en formato dd/mm/yyyy' })
     date: Date;
 
-    /* @ApiHideProperty()
-    @IsEmpty() */ //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
-    @IsBoolean()
+    @ApiHideProperty()
+    @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
+
     isAdmin?: boolean
 }
 
