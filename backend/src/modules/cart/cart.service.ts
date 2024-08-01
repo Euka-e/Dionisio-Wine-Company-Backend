@@ -4,16 +4,17 @@ import { CartRepository } from './cart.repository';
 @Injectable()
 export class CartService {
   constructor(private readonly cartRepository: CartRepository) { }
-
+/* 
   async createCart(userId: string) {
     return await this.cartRepository.createCart(userId);
-  }
+  } */
 
-  async addItemToCart(cartId: string, productId: string, quantity: number) {
-    return await this.cartRepository.addItemToCart(cartId, productId, quantity);
-  }
-
-  async checkout(cartId: string) {
-    return await this.cartRepository.checkoutCart(cartId);
-  }
+    //productId
+    async addItemToCart(userId: string, productId: string, quantity: number) {
+      return await this.cartRepository.addItemToCart(userId, productId, quantity);
+    }
+  
+    async checkout(userId: string) {
+      return await this.cartRepository.checkout(userId);
+    }
 }

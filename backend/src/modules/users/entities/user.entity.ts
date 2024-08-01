@@ -76,7 +76,7 @@ export class User {
     @Column({ default: false })
     isAdmin?: boolean;
 
-    @OneToOne(() => Cart, cart => cart.user)
+    @OneToOne(() => Cart, cart => cart.user, { cascade: true, eager: true })
     @JoinColumn()
     cart: Cart;
 

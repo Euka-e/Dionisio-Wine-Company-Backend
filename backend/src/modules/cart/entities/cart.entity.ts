@@ -1,7 +1,7 @@
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/modules/users/entities/user.entity';
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CartItem } from './cartItem.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'CARTS' })
 export class Cart {
@@ -10,14 +10,15 @@ export class Cart {
   id: string;
 
   @OneToOne(() => User, user => user.cart)
-  @ApiProperty({ description: 'The user to whom this cart belongs' })
+  @ApiProperty({ description: 'The user who owns this cart' })
   user: User;
 
-  @OneToMany(() => CartItem, cartItem => cartItem.cart)
-  @ApiProperty({ description: 'The items in the cart', type: () => [CartItem] })
+  @OneToMany(() => CartItem, cartItem => cartItem.cart, { cascade: true })
+  @ApiProperty({ description: 'The items in the cart' })
   items: CartItem[];
 
-  @Column('decimal')
+  @Column('decimal', { default: 0 })
   @ApiProperty({ description: 'The total price of all items in the cart' })
   total: number;
 }
+

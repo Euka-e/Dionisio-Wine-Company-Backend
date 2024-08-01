@@ -2,8 +2,9 @@ import { Body, Controller, Param, Post } from "@nestjs/common";
 import { Cart } from "./entities/cart.entity";
 import { CartService } from "./cart.service";
 import { order } from "../orders/entities/order.entity";
-import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CartItem } from "./entities/cartItem.entity";
+import { AddItemDto } from "./dto/addItem.dto";
 
 
 @Controller('cart')
@@ -11,27 +12,20 @@ import { CartItem } from "./entities/cartItem.entity";
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @Post()
-  async createCart(@Param('userId') userId: string): Promise<Cart> {
-    return await this.cartService.createCart(userId);
-  }
-
-
-  @Post(':cartId/item')
+  @Post(':userId/item')
+  @ApiParam({ name: 'userId', required: true, description: 'The ID of the user' })
   async addItemToCart(
-    @Param('cartId') cartId: string,
-    @Body('productId') productId: string,
-    @Body('quantity') quantity: number
-  ): Promise<Cart> {
-    return await this.cartService.addItemToCart(cartId, productId, quantity);
+    @Param('userId') userId: string,
+    @Body() addItemDto: AddItemDto
+  ) {
+    return this.cartService.addItemToCart(userId, addItemDto.productId, addItemDto.quantity);
   }
 
-  @Post(':id/checkout')
-  async checkout(@Param('CartId') cartId: string): Promise<order> {
-    return await this.cartService.checkout(cartId);
+  @Post(':userId/checkout')
+  @ApiParam({ name: 'userId', required: true, description: 'The ID of the user' })
+  async checkout(@Param('userId') userId: string) {
+    await this.cartService.checkout(userId);
   }
 
-
-  
   // Otros endpoints como removeItem
 }
