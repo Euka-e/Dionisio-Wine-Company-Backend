@@ -46,6 +46,7 @@ export class AuthService {
     try {
       const pass = "Password01@";
       let user = await this.usersRepository.findByEmail(email);
+
       if (!user) {
         const encryptedPassword = await bcrypt.hash(pass, 10);
         const newUser = {
@@ -56,7 +57,13 @@ export class AuthService {
         };
         user = await this.usersService.createAuth0User(newUser);
       }
-      return await this.auth0SignIn(email);
+      const userEmail = user.email
+      const signIn = await this.auth0SignIn(userEmail)
+      if (user && user.authId === id) {
+        return signIn
+      } else {
+        throw new BadRequestException("No se pudo iniciar sesión, agúnos campos son incorrectos");
+      }
     } catch (error) {
       console.error('Error en handleUser:', error.message);
       throw new BadRequestException("No se pudo iniciar sesión con Auth0");
