@@ -2,16 +2,20 @@ import { Body, Controller, Param, Post } from "@nestjs/common";
 import { Cart } from "./entities/cart.entity";
 import { CartService } from "./cart.service";
 import { order } from "../orders/entities/order.entity";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { CartItem } from "./entities/cartItem.entity";
 
 
 @Controller('cart')
+@ApiTags('Cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Post()
-  async createCart(@Body('userId') userId: string): Promise<Cart> {
+  async createCart(@Param('userId') userId: string): Promise<Cart> {
     return await this.cartService.createCart(userId);
   }
+
 
   @Post(':cartId/item')
   async addItemToCart(
@@ -23,7 +27,7 @@ export class CartController {
   }
 
   @Post(':id/checkout')
-  async checkout(@Param('id') cartId: string): Promise<order> {
+  async checkout(@Param('CartId') cartId: string): Promise<order> {
     return await this.cartService.checkout(cartId);
   }
 

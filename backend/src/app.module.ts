@@ -11,6 +11,7 @@ import { OffersModule } from './modules/offers/offers.module';
 import { typeOrmConfig } from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     CategoriesModule,
     OrdersModule,
+    CartModule,
     OffersModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
