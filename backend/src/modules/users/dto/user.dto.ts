@@ -1,5 +1,5 @@
 import { ApiHideProperty, ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, Length, Matches, IsString, IsNumber, Validate, IsEmpty, IsDateString, IsBoolean, IsOptional, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, Matches, IsString, IsNumber, Validate, IsEmpty, IsDateString, IsBoolean, IsOptional, MaxLength} from 'class-validator';
 import { PasswordMatch } from '../../../decorators/passwordMatch.decorator';
 
 export class CreateUserDto {
@@ -99,7 +99,6 @@ export class CreateUserDto {
 
     @ApiHideProperty()
     @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
-    @IsBoolean()
     isAdmin?: boolean
 }
 
