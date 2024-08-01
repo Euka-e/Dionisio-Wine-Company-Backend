@@ -1,0 +1,91 @@
+{
+  "data": [
+    {
+      "id": "0bef929f-07b9-4a45-95e4-bb73cc4d03a9",
+      "name": "Andeluna Altitud",
+      "description": "Vino con tonos acidos y trasfondo amaderado",
+      "price": "24000.00",
+      "stock": 13,
+      "imgUrl": "https://http2.mlstatic.com/D_NQ_NP_718923-MLA50247409003_062022-O.webp",
+      "store": "Enotek Vinos",
+      "isActive": true,
+      "category": {
+        "categoryId": "6835eee5-fa28-4136-9dfb-9df777da299e",
+        "name": "Merlot"
+      }
+    },
+    {
+      "id": "6179bb81-a417-4341-9bad-cc21491ed032",
+      "name": "Saint Felicien Cabernet",
+      "description": "Vino con tonos dulces y primera impresión contundente",
+      "price": "30000.00",
+      "stock": 13,
+      "imgUrl": "https://http2.mlstatic.com/D_NQ_NP_772424-MLU74143206037_012024-O.webp",
+      "store": "Vinidex Vinos",
+      "isActive": true,
+      "category": {
+        "categoryId": "6835eee5-fa28-4136-9dfb-9df777da299e",
+        "name": "Merlot"
+      }
+    },
+    {
+      "id": "04293884-54e4-4fd1-8267-4bd290e7f63e",
+      "name": "Perro Callejero",
+      "description": "Vino con tonos dulces y primera impresión contundente",
+      "price": "30000.00",
+      "stock": 13,
+      "imgUrl": "https://http2.mlstatic.com/D_NQ_NP_809204-MLA54076120376_022023-O.webp",
+      "store": "Vinidex Vinos",
+      "isActive": true,
+      "category": {
+        "categoryId": "6835eee5-fa28-4136-9dfb-9df777da299e",
+        "name": "Merlot"
+      }
+    },
+    {
+      "id": "21436ad3-6163-42f1-b5de-c8654e95e0bb",
+      "name": "alma mora",
+      "description": "vino",
+      "price": "1000.00",
+      "stock": 1,
+      "imgUrl": "https://res.cloudinary.com/dqclryqge/image/upload/v1722276592/ctrl4ozp18urt0mc6qnx.jpg",
+      "store": "finca las moras",
+      "isActive": true,
+      "category": {
+        "categoryId": "6835eee5-fa28-4136-9dfb-9df777da299e",
+        "name": "Merlot"
+      }
+    },
+    {
+      "id": "f70bbb0c-7aa4-4c57-a48b-97b8feefc7b3",
+      "name": "Trumpeter",
+      "description": "Vino con tonos amaderado y primera impresión acido",
+      "price": "30000.00",
+      "stock": 13,
+      "imgUrl": "https://http2.mlstatic.com/D_NQ_NP_699638-MLU74927683593_032024-O.webp",
+      "store": "Vinotek Vinos",
+      "isActive": true,
+      "category": {
+        "categoryId": "6835eee5-fa28-4136-9dfb-9df777da299e",
+        "name": "Merlot"
+      }
+    },
+    {
+      "id": "e4351f61-a157-40af-82fb-cbc7ecaaf96c",
+      "name": "Famiglia",
+      "description": "Vino con tonos amaderado y primera impresión acido",
+      "price": "30000.00",
+      "stock": 13,
+      "imgUrl": "https://http2.mlstatic.com/D_NQ_NP_839776-MLA47174827666_082021-O.webp",
+      "store": "Vinotek Vinos",
+      "isActive": true,
+      "category": {
+        "categoryId": "db63876d-9158-4ed3-8031-01cbea5b06da",
+        "name": "Malbec"
+      }
+    }
+  ],
+  "total": 6,
+  "page": 1,
+  "lastPage": 1
+}

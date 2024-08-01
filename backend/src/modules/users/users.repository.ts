@@ -2,7 +2,8 @@ import { Injectable, InternalServerErrorException, NotFoundException } from "@ne
 import { User } from "./entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateUserDto, UpdateUserDto } from "./dto/user.dto";
+import { Auth0Dto, CreateUserDto, UpdateUserDto } from "./dto/user.dto";
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersRepository {
@@ -57,9 +58,31 @@ export class UsersRepository {
 
   async createUser(user: CreateUserDto) {
     try {
+      if (!user.id) {
+        user.id = uuidv4();
+      }
       if (typeof user.date === 'string') {
         user.date = new Date(user.date);
       }
+
+      const newUser = await this.usersRepository.save(user);
+      const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
+      const { isAdmin, ...finalUser } = findUser;
+      return finalUser;
+    } catch (error) {
+      console.error('Error creando usuario:', error.message);
+      throw new InternalServerErrorException('No se pudo crear el usuario.');
+    }
+  }
+
+  async createAuth0User(userDto: Auth0Dto) {
+    try {
+
+      const user = new User();
+      user.id = uuidv4();
+      user.authId = userDto.id;
+      user.name = userDto.name;
+      user.email = userDto.email;
 
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
