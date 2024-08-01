@@ -12,4 +12,8 @@ export class CartService {
   async addItemToCart(cartId: string, productId: string, quantity: number) {
     return await this.cartRepository.addItemToCart(cartId, productId, quantity);
   }
+
+  async checkout(cartId: string) {
+    return await this.cartRepository.checkoutCart(cartId);
+  }
 }

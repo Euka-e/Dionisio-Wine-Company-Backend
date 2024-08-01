@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, Matches } from "class-validator";
 import { Cart } from "src/modules/cart/entities/cart.entity";
-import { Order } from "src/modules/orders/entities/order.entity";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { order } from "src/modules/orders/entities/order.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from "typeorm";
 
 @Entity({ name: 'USERS' })
 export class User {
@@ -76,13 +76,13 @@ export class User {
     @Column({ default: false })
     isAdmin?: boolean;
 
-    @OneToMany(() => Cart, cart => cart.user)
+    @OneToOne(() => Cart, cart => cart.user)
     cart: Cart[];
 
     @ApiProperty({
         description: 'List of orders associated with the user',
-        type: () => [Order]
+        type: () => [order]
     })
-    @OneToMany(() => Order, order => order.user)
-    orders?: Order[];
+    @OneToMany(() => order, order => order.user)
+    orders?: order[];
 }
