@@ -4,7 +4,7 @@ import { User } from 'src/modules/users/entities/user.entity';
 import { UsersRepository } from 'src/modules/users/users.repository';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from '../users/dto/user.dto';
+import { Auth0Dto, CreateUserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,10 +17,10 @@ export class AuthService {
     return "Todas las credenciales..."
   }
 
-  async handleUser(userDto: CreateUserDto) {
+  async handleUser(userDto: Auth0Dto) {
     let user = await this.usersService.findByEmail(userDto.email);
     if (!user) {
-      user = await this.usersService.createUser(userDto);
+      user = await this.usersService.createAuth0User(userDto);
     }
     return user;
   }

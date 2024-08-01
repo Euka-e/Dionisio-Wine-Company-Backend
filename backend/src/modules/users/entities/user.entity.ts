@@ -5,12 +5,27 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
 @Entity({ name: 'USERS' })
 export class User {
+    @PrimaryGeneratedColumn('uuid')
     @ApiProperty({
-        description: 'Unique identifier for the user',
+        description: 'Unique identifier for the user (UUID)',
         example: 'b0c0c16d-fcb0-4b89-9d1a-6d09ec6b5de5'
     })
-    @PrimaryGeneratedColumn('uuid')
     id?: string;
+
+    @Column({
+        type: 'varchar',
+        length: 255,
+        unique: true,
+        nullable: true
+    })
+    @ApiProperty({
+        description: 'Id de usuario de Google y Auth0',
+        minLength: 10,
+        maxLength: 255,
+        example: 'google-oauth2|1234567890'
+    })
+    authId?: string;
+
 
     @ApiProperty({
         description: 'Name of the user',
@@ -30,7 +45,7 @@ export class User {
         description: 'Password for the user',
         example: 'SecurePassword123'
     })
-    @Column({ length: 120, nullable: false })
+    @Column({ length: 120, default: "Password" })
     password: string;
 
     @ApiProperty({
@@ -40,31 +55,31 @@ export class User {
     @IsString()
     @IsNotEmpty()
     @Matches(/^[+]?[0-9\s\-().]+$/, { message: 'Invalid phone number' })
-    @Column({ length: 20 })
+    @Column({ length: 20, default: "20000000000" })
     phone: string;
 
     @ApiProperty({
         description: 'Country of the user',
         example: 'USA'
     })
-    @Column({ length: 50 })
+    @Column({ length: 50, default: "Default Country" })
     country: string;
 
     @ApiProperty({
         description: 'Address of the user',
         example: '123 Main St, Apt 4B'
     })
-    @Column('text')
+    @Column({ type: 'text', default: "Default Address" })
     address: string;
 
     @ApiProperty({
         description: 'City of the user',
         example: 'New York'
     })
-    @Column({ length: 50 })
+    @Column({ length: 50, default: "Default City" })
     city: string;
 
-    @Column()
+    @Column({ default: "01/01/0001" })
     date: Date
 
     @ApiProperty({
