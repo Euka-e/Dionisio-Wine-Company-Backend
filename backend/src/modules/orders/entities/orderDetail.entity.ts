@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable } from "typeorm";
-import { Order } from "./order.entity";
+
 import { Product } from "../../products/entities/product.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { order } from "./order.entity";
 
 @Entity({ name: 'ORDERDETAILS' })
 export class OrderDetail {
@@ -19,12 +20,12 @@ export class OrderDetail {
       })
     price: number;
 
-    @OneToOne(() => Order, (order) => order.orderDetail)
+    @OneToOne(() => order, (order) => order.orderDetail)
     @ApiProperty({
         description: 'The order associated with these details',
-        type: () => Order
+        type: () => order
       })
-    order: Order;
+    order: order;
 
     @ManyToMany(() => Product)
     @JoinTable({

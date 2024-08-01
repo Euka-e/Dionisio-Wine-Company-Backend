@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, Matches } from "class-validator";
 import { Cart } from "src/modules/cart/entities/cart.entity";
 import { order } from "src/modules/orders/entities/order.entity";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm";
 
 @Entity({ name: 'USERS' })
 export class User {
@@ -77,7 +77,8 @@ export class User {
     isAdmin?: boolean;
 
     @OneToOne(() => Cart, cart => cart.user)
-    cart: Cart[];
+    @JoinColumn()
+    cart: Cart;
 
     @ApiProperty({
         description: 'List of orders associated with the user',
