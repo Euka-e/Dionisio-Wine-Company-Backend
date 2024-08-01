@@ -18,7 +18,7 @@ export class UsersRepository {
         take: limit,
         skip: skip
       });
-      return users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+      return users;
     } catch (error) {
       console.error('Error obteniendo los usuarios:', error);
       throw new InternalServerErrorException('No se pudieron obtener los usuarios.');
@@ -75,7 +75,7 @@ export class UsersRepository {
     }
   }
 
-  async createAuth0User(userDto: Auth0Dto) {
+  async createAuth0User(userDto: any) {
     try {
 
       const user = new User();
@@ -83,6 +83,7 @@ export class UsersRepository {
       user.authId = userDto.id;
       user.name = userDto.name;
       user.email = userDto.email;
+      user.password = "Password01@";
 
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });

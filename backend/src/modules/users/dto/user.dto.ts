@@ -97,8 +97,8 @@ export class CreateUserDto {
     @Matches(/^\d{2}\/\d{2}\/\d{4}$/, { message: 'La fecha debe estar en formato dd/mm/yyyy' })
     date: Date;
 
-    @ApiHideProperty()
-    @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
+    /* @ApiHideProperty()
+    @IsEmpty() */ //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
     @IsBoolean()
     isAdmin?: boolean
 }
@@ -127,6 +127,8 @@ export class Auth0Dto {
     @IsString()
     @Length(3, 80)
     name: string;
+
+    password?: string;
 
     @ApiProperty({
         description: 'Correo electrónico del usuario',
