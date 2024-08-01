@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +21,10 @@ export class UsersService {
 
     async createUser(user: CreateUserDto) {
         return await this.usersRepository.createUser(user);
+    }
+
+    async createAuth0User(user: Auth0Dto) {
+        return await this.usersRepository.createAuth0User(user);
     }
 
     async updateUser(id: string, user: Partial<UpdateUserDto>) {
