@@ -10,7 +10,7 @@ export class order {
       description: 'The unique identifier for the order',
       example: 'a3bb2a61-4e60-4fd7-904e-77b96f4f72f1'
     })
-    id: string;
+    orderId: string;
   
     @Column()
     @ApiProperty({

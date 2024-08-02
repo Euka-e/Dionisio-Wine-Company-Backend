@@ -50,14 +50,14 @@ export class OrdersRepository {
     await this.ordersDetailRepository.save(orderDetail);
 
     return await this.ordersRepository.findOne({
-      where: { id: savedOrder.id },
+      where: { orderId: savedOrder.orderId },
       relations: { orderDetail: true },
     });
   }
 
   findOne(id: string) {
     const order = this.ordersRepository.findOne({
-      where: { id },
+      where: { orderId:id },
       relations: { orderDetail: { products: true } },
     });
 

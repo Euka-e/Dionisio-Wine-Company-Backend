@@ -5,7 +5,7 @@ export class AddItemDto {
   @ApiProperty({ description: 'The ID of the product to add', example: 'uuid' })
   @IsNotEmpty()
   @IsUUID()
-  productId: string;
+  product: string;
 
   @ApiProperty({ description: 'The quantity of the product to add', example: 1 })
   @IsNotEmpty()

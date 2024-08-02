@@ -8,7 +8,7 @@ import { Category } from 'src/modules/categories/entities/category.entity';
 import { config as dotenvConfig } from 'dotenv';
 import { Offer } from 'src/modules/offers/entities/offer.entity';
 import { Cart } from 'src/modules/cart/entities/cart.entity';
-import { CartItem } from 'src/modules/cart/entities/cartItem.entity';
+import { CartDetail } from 'src/modules/cart/entities/cartDetail.entity';
 
 dotenvConfig({ path: '.env.development' });
 
@@ -17,7 +17,7 @@ const config = {
     port: process.env.DB_PORT,
     url: process.env.DATABASE_URL,
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-    entities: [User, Product, order, OrderDetail, Category, Offer, Cart, CartItem],
+    entities: [User, Product, order, OrderDetail, Category, Offer, Cart, CartDetail],
     migrations: ['dist/migrations/*{.ts,.js}'],
     autoLoadEntities: true,
     logging: ['error'],

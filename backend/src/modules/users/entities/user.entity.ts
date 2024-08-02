@@ -91,9 +91,9 @@ export class User {
     @Column({ default: false })
     isAdmin?: boolean;
 
-    @OneToOne(() => Cart, cart => cart.user, { cascade: true, eager: true })
+    @OneToOne(() => Cart, cart => cart.user)
     @JoinColumn()
-    cart: Cart;
+    cart?: Cart;
 
     @ApiProperty({
         description: 'List of orders associated with the user',
