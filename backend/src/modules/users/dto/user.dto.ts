@@ -99,6 +99,7 @@ export class CreateUserDto {
 
     @ApiHideProperty()
     @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
+
     isAdmin?: boolean
 }
 
@@ -126,6 +127,8 @@ export class Auth0Dto {
     @IsString()
     @Length(3, 80)
     name: string;
+
+    password?: string;
 
     @ApiProperty({
         description: 'Correo electrónico del usuario',

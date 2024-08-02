@@ -9,13 +9,8 @@ import { ParseDatePipe } from '../../pipes/parseDate.pipe';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  @Get()
-  getAuth() {
-    return this.authService.getAuth();
-  }
-
   @Post('user')
-  async handleUser(@Body() userDto: Auth0Dto) {
+  async handleUser(@Body() userDto: any) {
     return await this.authService.handleUser(userDto);
   }
 

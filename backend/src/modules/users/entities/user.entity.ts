@@ -46,7 +46,9 @@ export class User {
         description: 'Password for the user',
         example: 'SecurePassword123'
     })
-    @Column({ length: 120, default: "Password" })
+    @Column({ length: 120, nullable: false })
+    @IsString()
+    @IsNotEmpty()
     password: string;
 
     @ApiProperty({
