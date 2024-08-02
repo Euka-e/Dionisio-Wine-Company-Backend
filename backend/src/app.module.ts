@@ -12,6 +12,7 @@ import { typeOrmConfig } from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { CartModule } from './modules/cart/cart.module';
+import { MailerModule } from './modules/mailer/mailer.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CartModule } from './modules/cart/cart.module';
     OrdersModule,
     CartModule,
     OffersModule,
+    MailerModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       global: true,
@@ -40,9 +42,10 @@ import { CartModule } from './modules/cart/cart.module';
       isGlobal: true,
       envFilePath: '.env.development',
     }),
-    AuthModule
+    AuthModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
