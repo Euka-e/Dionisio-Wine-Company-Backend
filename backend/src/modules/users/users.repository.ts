@@ -80,7 +80,7 @@ export class UsersRepository {
 
       const user = new User();
       user.id = uuidv4();
-      user.authId = userDto.id;
+      user.authId = userDto.authId;
       user.name = userDto.name;
       user.email = userDto.email;
       user.password = "Password01@";

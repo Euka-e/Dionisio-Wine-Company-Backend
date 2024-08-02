@@ -47,22 +47,24 @@ export class AuthService {
       const pass = "Password01@";
       let user = await this.usersRepository.findByEmail(email);
 
-      if (!user) {
-        const encryptedPassword = await bcrypt.hash(pass, 10);
+      if (user) {
+        console.log(`Usuario encontrado de primeras: ${JSON.stringify(user)}`);
+      } else {
         const newUser = {
           authId: id,
           name: name,
           email: email,
-          password: encryptedPassword
         };
         user = await this.usersService.createAuth0User(newUser);
+        user = await this.usersRepository.findByEmail(email);
+        console.log(`Usuario creado correctamente: ${JSON.stringify(user)}`);
       }
-      const userEmail = user.email
-      const signIn = await this.auth0SignIn(userEmail)
-      if (user && user.authId === id) {
-        return signIn
+
+      if (user.authId === id) {
+        return await this.auth0SignIn(email);
       } else {
-        throw new BadRequestException("No se pudo iniciar sesión, agúnos campos son incorrectos");
+        console.error(`authId del usuario: ${user.authId}, id recibido: ${id}`);
+        throw new BadRequestException("No se pudo iniciar sesión, algunos campos son incorrectos");
       }
     } catch (error) {
       console.error('Error en handleUser:', error.message);
