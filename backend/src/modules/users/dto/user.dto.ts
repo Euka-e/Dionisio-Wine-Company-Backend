@@ -14,7 +14,8 @@ import {
   Validate,
   IsEmpty,
   IsDateString,
-  IsBoolean,
+  IsOptional,
+  MaxLength,
 } from 'class-validator';
 import { PasswordMatch } from '../../../decorators/passwordMatch.decorator';
 import { Role } from './roles.enum';
@@ -38,6 +39,15 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @ApiProperty({
+    description: 'Correo electrónico del usuario',
+    example: 'juan.perez@example.com',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255, { message: 'ID debe tener un máximo de 255 caracteres' })
+  id?: string;
 
   @ApiProperty({
     description:
@@ -115,7 +125,6 @@ export class CreateUserDto {
 
   @ApiHideProperty()
   @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
-  @IsBoolean()
   role?: Role;
 }
 
@@ -125,3 +134,33 @@ export class LoginUserDto extends PickType(CreateUserDto, [
   'email',
   'password',
 ]) {}
+
+export class Auth0Dto {
+  @ApiProperty({
+    description: 'Id de usuario de google y auth0',
+    example: 'google-oauth2|1234567890',
+  })
+  @IsOptional()
+  @IsString()
+  id: string;
+
+  @ApiProperty({
+    description: 'Nombre del usuario',
+    minLength: 3,
+    maxLength: 80,
+    example: 'Juan Pérez',
+  })
+  @IsString()
+  @Length(3, 80)
+  name: string;
+
+  password?: string;
+
+  @ApiProperty({
+    description: 'Correo electrónico del usuario',
+    example: 'juan.perez@example.com',
+  })
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}

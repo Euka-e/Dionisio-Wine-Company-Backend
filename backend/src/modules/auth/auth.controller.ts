@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from '../users/dto/user.dto';
+import { Auth0Dto, CreateUserDto, LoginUserDto } from '../users/dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ParseDatePipe } from '../../pipes/parseDate.pipe';
 
@@ -9,13 +9,8 @@ import { ParseDatePipe } from '../../pipes/parseDate.pipe';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  @Get()
-  getAuth() {
-    return this.authService.getAuth();
-  }
-
   @Post('user')
-  async handleUser(@Body() userDto: CreateUserDto) {
+  async handleUser(@Body() userDto: any) {
     return await this.authService.handleUser(userDto);
   }
 

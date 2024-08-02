@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guards/authorization.guard';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from '../users/dto/roles.enum';
+import { UpdateOrderDto } from './dto/update-order.dto';
 /* import { AuthorizationGuard } from '../auth/guards/authorization.guard' */
 
 @Controller('orders')
@@ -25,35 +25,21 @@ export class OrdersController {
 
   //! Verificar logica del Carrito de compra antes de poner una guarda a este POST
   @Post()
-  //@UseGuards(AuthGuard)
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  create(@Body() order: CreateOrderDto) {
+    const { userId, products } = order;
+    return this.ordersService.create(userId, products);
   }
 
-  @Get()
-  @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RolesGuard)
+  /*   @Get()
+  //@UseGuards(AuthorizationGuard)
+>>>>>>> origin/develop
   findAll() {
     return this.ordersService.findAll();
-  }
+  } */
 
   @Get(':id')
   @UseGuards(AuthGuard)
   findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RolesGuard)
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
-  }
-
-  @Delete(':id')
-  @Roles(Role.SuperAdmin)
-  @UseGuards(AuthGuard, RolesGuard)
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
+    return this.ordersService.findOne(id);
   }
 }

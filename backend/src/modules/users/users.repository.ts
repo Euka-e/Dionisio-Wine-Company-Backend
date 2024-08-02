@@ -6,7 +6,8 @@ import {
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersRepository {
@@ -21,9 +22,8 @@ export class UsersRepository {
         take: limit,
         skip: skip,
       });
-      return users.map(
-        ({ password, ...userWithoutPassword }) => userWithoutPassword,
-      );
+
+      return users;
     } catch (error) {
       console.error('Error obteniendo los usuarios:', error);
       throw new InternalServerErrorException(
@@ -69,9 +69,31 @@ export class UsersRepository {
 
   async createUser(user: CreateUserDto) {
     try {
+      if (!user.id) {
+        user.id = uuidv4();
+      }
       if (typeof user.date === 'string') {
         user.date = new Date(user.date);
       }
+
+      const newUser = await this.usersRepository.save(user);
+      const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
+      const { role, ...finalUser } = findUser;
+      return finalUser;
+    } catch (error) {
+      console.error('Error creando usuario:', error.message);
+      throw new InternalServerErrorException('No se pudo crear el usuario.');
+    }
+  }
+
+  async createAuth0User(userDto: any) {
+    try {
+      const user = new User();
+      user.id = uuidv4();
+      user.authId = userDto.authId;
+      user.name = userDto.name;
+      user.email = userDto.email;
+      user.password = 'Password01@';
 
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
