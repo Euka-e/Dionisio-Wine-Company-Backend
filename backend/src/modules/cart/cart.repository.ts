@@ -1,26 +1,30 @@
-import { Repository } from "typeorm";
-import { Product } from "../products/entities/product.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable } from "@nestjs/common";
-import { Cart } from "./entities/cart.entity";
-import { CartItem } from "./entities/cartItem.entity";
-import { order } from "../orders/entities/order.entity";
-import { OrdersRepository } from "../orders/orders.repository";
-import { UsersRepository } from "../users/users.repository";
-import { User } from "../users/entities/user.entity";
+import { Repository } from 'typeorm';
+import { Product } from '../products/entities/product.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { Cart } from './entities/cart.entity';
+import { CartItem } from './entities/cartItem.entity';
+import { Order } from '../orders/entities/order.entity';
+import { OrdersRepository } from '../orders/orders.repository';
+import { UsersRepository } from '../users/users.repository';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class CartRepository {
   constructor(
     @InjectRepository(Cart) private cartRepository: Repository<Cart>,
-    @InjectRepository(CartItem) private cartItemRepository: Repository<CartItem>,
+    @InjectRepository(CartItem)
+    private cartItemRepository: Repository<CartItem>,
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(User) private userRepository: Repository<User>,
     private orderRepository: OrdersRepository,
-
   ) {}
 
-  async addItemToCart(userId: string, productId: string, quantity: number): Promise<Cart> {
+  async addItemToCart(
+    userId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<Cart> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['cart', 'cart.items', 'cart.items.product'],
@@ -31,13 +35,15 @@ export class CartRepository {
     }
 
     const cart = user.cart;
-    const product = await this.productRepository.findOne({ where: { id: productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
 
     if (!product) {
       throw new Error('Product not found');
     }
 
-    let cartItem = cart.items.find(item => item.productId === productId);
+    let cartItem = cart.items.find((item) => item.productId === productId);
 
     if (cartItem) {
       cartItem.quantity += quantity;
@@ -71,7 +77,7 @@ export class CartRepository {
 
     const cart = user.cart;
 
-    const products = cart.items.map(item => ({
+    const products = cart.items.map((item) => ({
       id: item.productId,
       quantity: item.quantity,
     }));
@@ -83,7 +89,7 @@ export class CartRepository {
     await this.cartRepository.save(cart);
   }
 
- /*  async checkout(userId: string): Promise<void> {
+  /*  async checkout(userId: string): Promise<void> {
     const cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
       relations: ['items', 'items.product']
@@ -96,7 +102,6 @@ export class CartRepository {
     cart.total = 0;
     await this.cartRepository.save(cart);
   } */
-
 
   // removeItem
 }
