@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { Product } from "../products/entities/product.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Cart } from "./entities/cart.entity";
 import { CartDetail } from "./entities/cartDetail.entity";
 import { User } from "../users/entities/user.entity";
@@ -19,18 +19,28 @@ export class CartRepository {
   async create(id: string, products: { productId: string, quantity: number }[]): Promise<Cart> {
     let total = 0;
 
-    const user = await this.userRepository.findOneBy({  id },);
-    if (!user) throw new Error(`User with id: ${id} not found`);
- 
-    const newCart = new Cart();
-    /* newCart.date = new Date(); */
-    newCart.user = user;
-    const savedCart = await this.cartRepository.save(newCart);
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException(`User with id: ${id} not found`);
+
+    let cart = await this.cartRepository.findOne({
+      where: { user: { id } },
+      relations: { cartDetail: true },
+    });
+
+    if (!cart) {
+      cart = new Cart();
+      cart.user = user;
+      cart = await this.cartRepository.save(cart);
+    }
 
     const productArray = await Promise.all(
       products.map(async ({ productId, quantity }) => {
         const product = await this.productsRepository.findOneBy({ productId });
         if (!product) throw new NotFoundException(`Product with Id ${productId} not found`);
+
+        if (product.stock < quantity) {
+          throw new BadRequestException(`Insufficient stock for product with Id ${productId}`);
+        }
 
         total += Number(product.price) * quantity;
 
@@ -43,19 +53,27 @@ export class CartRepository {
       }),
     );
 
-    const cartDetail = new CartDetail();
-    cartDetail.price = Number(total.toFixed(2));
-    cartDetail.products = productArray;
-    cartDetail.cart = savedCart;
+    const existingCartDetail = await this.cartDetailRepository.findOne({
+      where: { cart: { cartId: cart.cartId } },
+    });
 
-    await this.cartDetailRepository.save(cartDetail);
+    if (existingCartDetail) {
+      existingCartDetail.price = Number(total.toFixed(2));
+      existingCartDetail.products = productArray;
+      await this.cartDetailRepository.save(existingCartDetail);
+    } else {
+      const cartDetail = new CartDetail();
+      cartDetail.price = Number(total.toFixed(2));
+      cartDetail.products = productArray;
+      cartDetail.cart = cart;
+      await this.cartDetailRepository.save(cartDetail);
+    }
 
     return await this.cartRepository.findOne({
-      where: { cartId: savedCart.cartId },
+      where: { cartId: cart.cartId },
       relations: { cartDetail: true },
     });
   }
-
   /* async checkout(userId: string): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id: userId },

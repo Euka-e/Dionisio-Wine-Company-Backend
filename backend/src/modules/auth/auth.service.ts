@@ -42,39 +42,6 @@ export class AuthService {
     }
   }
 
-  async handleUser(userDto: Auth0Dto) {
-    const { id, email, name } = userDto;
-    try {
-      const pass = 'Password01@';
-      let user = await this.usersRepository.findByEmail(email);
-
-      if (user) {
-        console.log(`Usuario encontrado de primeras: ${JSON.stringify(user)}`);
-      } else {
-        const newUser = {
-          authId: id,
-          name: name,
-          email: email,
-        };
-        user = await this.usersService.createAuth0User(newUser);
-        user = await this.usersRepository.findByEmail(email);
-        console.log(`Usuario creado correctamente: ${JSON.stringify(user)}`);
-      }
-
-      if (user.authId === id) {
-        return await this.auth0SignIn(email);
-      } else {
-        console.error(`authId del usuario: ${user.authId}, id recibido: ${id}`);
-        throw new BadRequestException(
-          'No se pudo iniciar sesión, algunos campos son incorrectos',
-        );
-      }
-    } catch (error) {
-      console.error('Error en handleUser:', error.message);
-      throw new BadRequestException('No se pudo iniciar sesión con Auth0');
-    }
-  }
-
   async signUp(user: CreateUserDto) {
     const { email, password } = user;
 
@@ -95,4 +62,44 @@ export class AuthService {
     };
     return await this.usersRepository.createUser(newUser);
   }
+
+  async handleUser(userDto: Auth0Dto) {
+    if (!userDto.authId || !userDto.email || !userDto.name) {
+      throw new BadRequestException('Missing required fields');
+    }
+    const { authId, email, name} = userDto;
+    const newUser = {
+      password: authId,
+      confirmPassword: authId,
+      name: name,
+      authId:authId,
+      email: email
+    }
+    try {
+      let user = await this.usersRepository.findByEmail(email);
+
+      if (user) {
+        console.log(`Usuario encontrado de primeras: ${JSON.stringify(user)}`);
+      } else {
+        user = await this.signUp(newUser);
+        const findUser = await this.usersRepository.findByEmail(email);
+        console.log(`Usuario creado correctamente: ${JSON.stringify(findUser)}`);
+        return this.signIn(email,authId);
+      }
+
+      const findUser = await this.usersRepository.findByEmail(email);
+      if (findUser) {
+        return await this.signIn(email,authId);
+      } else {
+        console.error(`authId del usuario: ${findUser.authId}, id recibido: ${findUser.id}`);
+        throw new BadRequestException(
+          'No se pudo iniciar sesión, algunos campos son incorrectos',
+        );
+      }
+    } catch (error) {
+      console.error('Error en handleUser:', error.message);
+      throw new BadRequestException('No se pudo iniciar sesión con Auth0');
+    }
+  }
+
 }

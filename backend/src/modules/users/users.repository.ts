@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt'
 export class UsersRepository {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async getUsers(page: number, limit: number) {
     try {
@@ -69,16 +69,14 @@ export class UsersRepository {
   }
 
   async createUser(user: CreateUserDto) {
+    const { email} = user;
     try {
-      if (!user.id) {
-        user.id = uuidv4();
-      }
       if (typeof user.date === 'string') {
         user.date = new Date(user.date);
       }
 
-      const newUser = await this.usersRepository.save(user);
-      const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
+      await this.usersRepository.save(user);
+      const findUser = await this.findByEmail(email);
       const { role, ...finalUser } = findUser;
       return finalUser;
     } catch (error) {
@@ -87,16 +85,17 @@ export class UsersRepository {
     }
   }
 
-  async createAuth0User(userDto: any) {
+  async createAuth0User(userDto: Auth0Dto) {
+    const { authId, email, name } = userDto;
     try {
       const user = new User();
-      user.authId = userDto.authId;
-      user.name = userDto.name;
-      user.email = userDto.email;
-      const encryptedPassword = await bcrypt.hash(userDto.authId, 10);
+      user.authId = authId;
+      user.name = name;
+      user.email = email;
+      const encryptedPassword = await bcrypt.hash(authId, 10);
       user.password = encryptedPassword;
-      const newUser = await this.usersRepository.save(user);
-      const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
+      await this.usersRepository.save(user);
+      const findUser = await this.findByEmail(email);
       const { role, ...finalUser } = findUser;
       return finalUser;
     } catch (error) {

@@ -15,7 +15,7 @@ export class OrdersRepository {
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
-  async create(id: string, products: { productId: string, quantity: number }[]): Promise<Order> {
+  async create(id: string, products: any) {
     let total = 0;
 
     const user = await this.usersRepository.findOneBy({ id: id });

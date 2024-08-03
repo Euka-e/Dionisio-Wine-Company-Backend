@@ -23,7 +23,7 @@ export class UsersService {
         return await this.usersRepository.createUser(user);
     }
 
-    async createAuth0User(user: any) {
+    async createAuth0User(user: Auth0Dto) {
         return await this.usersRepository.createAuth0User(user);
     }
 

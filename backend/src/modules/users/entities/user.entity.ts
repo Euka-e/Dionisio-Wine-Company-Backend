@@ -3,6 +3,7 @@ import { IsNotEmpty, IsString, Matches } from "class-validator";
 import { Cart } from "src/modules/cart/entities/cart.entity";
 import { Order } from "src/modules/orders/entities/order.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm";
+import { Role } from "../dto/roles.enum";
 
 @Entity({ name: 'USERS' })
 export class User {
@@ -15,7 +16,6 @@ export class User {
 
   @Column({
     type: 'varchar',
-    unique: true,
     nullable: true,
   })
   @ApiProperty({
@@ -37,7 +37,7 @@ export class User {
     description: 'Email address of the user',
     example: 'john.doe@example.com',
   })
-  @Column({ length: 50, unique: true, nullable: false })
+  @Column({ length: 50, nullable: false })
   email: string;
 
   @ApiProperty({
@@ -48,13 +48,6 @@ export class User {
   @IsString()
   @IsNotEmpty()
   password: string;
-
-    @ApiProperty({
-        description: 'Password for the user',
-        example: 'SecurePassword123'
-    })
-    @Column({ length: 120, nullable: false })
-    password: string;
 
   @ApiProperty({
     description: 'Country of the user',
@@ -88,18 +81,14 @@ export class User {
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role?: Role;
 
-  @OneToOne(() => Cart, (cart) => cart.user, { cascade: true, eager: true })
+  @OneToOne(() => Cart, cart => cart.user)
   @JoinColumn()
-  cart: Cart;
+  cart?: Cart;
 
-    @OneToOne(() => Cart, cart => cart.user)
-    @JoinColumn()
-    cart?: Cart;
-
-    @ApiProperty({
-        description: 'List of orders associated with the user',
-        type: () => [Order]
-    })
-    @OneToMany(() => Order, order => order.user)
-    orders?: Order[];
+  @ApiProperty({
+    description: 'List of orders associated with the user',
+    type: () => [Order]
+  })
+  @OneToMany(() => Order, order => order.user)
+  orders?: Order[];
 }
