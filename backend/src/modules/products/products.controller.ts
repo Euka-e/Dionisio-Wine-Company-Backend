@@ -25,7 +25,6 @@ export class ProductsController {
 
   //! Si el usuario puede comprar productos sin tener una cuenta, entonces la guarda aca puede dar conflictos
   @Get()
-  @UseGuards(AuthGuard)
   async findAll(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
