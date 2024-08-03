@@ -115,7 +115,7 @@ export class Auth0Dto {
     })
     @IsOptional()
     @IsString()
-    id: string;
+    authId: string;
 
     @ApiProperty({
         description: 'Nombre del usuario',

@@ -28,7 +28,7 @@ export class OffersRepository{
     
         const offers: Offer[] = [];
         if (productId) {
-          const product = await this.productsRepository.findOne({ where: { id: productId } });
+          const product = await this.productsRepository.findOne({ where: { productId } });
           if (!product) {
             throw new NotFoundException(`Product with id ${productId} not found`);
           }
@@ -85,7 +85,7 @@ export class OffersRepository{
     
         const { percentage, productId, categoryId} = updateOfferDto;
         if (productId) {
-          const product = await this.productsRepository.findOne({ where: { id: productId } });
+          const product = await this.productsRepository.findOne({ where: { productId } });
           if (!product) {
             throw new NotFoundException(`Product with id ${productId} not found`);
           }

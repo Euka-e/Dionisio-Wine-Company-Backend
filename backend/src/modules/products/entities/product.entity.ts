@@ -19,7 +19,7 @@ export class Product {
     example: 'uuid',
   })
   @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  productId?: string;
 
   @ApiProperty({
     description: 'Name of the product',
@@ -89,8 +89,9 @@ export class Product {
     type: () => [OrderDetail],
   })
   @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)
-  orderDetails?: OrderDetail[];
+  orderDetail?: OrderDetail[];
 
-  @OneToOne(()=> CartDetail, (cartDetail) => cartDetail.products)
-  cartDetail?:CartDetail;
+  @ManyToMany(() => CartDetail, (cartDetail) => cartDetail.products)
+  cartDetail?: CartDetail[];
+
 }

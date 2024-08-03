@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, Matches } from "class-validator";
 import { Cart } from "src/modules/cart/entities/cart.entity";
-import { order } from "src/modules/orders/entities/order.entity";
+import { Order } from "src/modules/orders/entities/order.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm";
 
 @Entity({ name: 'USERS' })
@@ -46,7 +46,7 @@ export class User {
         description: 'Password for the user',
         example: 'SecurePassword123'
     })
-    @Column({ length: 120, default: "Password" })
+    @Column({ length: 120, nullable: false })
     password: string;
 
     @ApiProperty({
@@ -97,8 +97,8 @@ export class User {
 
     @ApiProperty({
         description: 'List of orders associated with the user',
-        type: () => [order]
+        type: () => [Order]
     })
-    @OneToMany(() => order, order => order.user)
-    orders?: order[];
+    @OneToMany(() => Order, order => order.user)
+    orders?: Order[];
 }

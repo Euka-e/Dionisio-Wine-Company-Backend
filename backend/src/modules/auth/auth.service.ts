@@ -1,6 +1,5 @@
 import { UsersService } from './../users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from 'src/modules/users/entities/user.entity';
 import { UsersRepository } from 'src/modules/users/users.repository';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
@@ -49,7 +48,7 @@ export class AuthService {
 
     const newUser = {
       ...user,
-      date: user.date,
+      date: date,
       password: encryptedPassword
     };
     return await this.usersRepository.createUser(newUser);

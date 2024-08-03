@@ -4,7 +4,7 @@ import { OrderDetail } from "./orderDetail.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({ name: 'ORDERS' })
-export class order {
+export class Order {
     @PrimaryGeneratedColumn('uuid')
     @ApiProperty({
       description: 'The unique identifier for the order',

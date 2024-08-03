@@ -6,7 +6,7 @@ import { CartRepository } from "./cart.repository";
 import { CartService } from "./cart.service";
 import { OrdersModule } from "../orders/orders.module";
 import { UsersModule } from "../users/users.module";
-import { CartDetail } from "./entities/CartDetail.entity";
+import { CartDetail } from "./entities/cartdetail.entity";
 import { Cart } from "./entities/cart.entity";
 import { User } from "../users/entities/user.entity";
 

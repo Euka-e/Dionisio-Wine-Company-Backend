@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable
 
 import { Product } from "../../products/entities/product.entity";
 import { ApiProperty } from "@nestjs/swagger";
-import { order } from "./order.entity";
+import { Order } from "./order.entity";
 
 @Entity({ name: 'ORDERDETAILS' })
 export class OrderDetail {
@@ -11,7 +11,7 @@ export class OrderDetail {
         description: 'The unique identifier for the order detail',
         example: 'z9y8x7w6-v5u4-t3s2-r1q0-p9o8n7m6l5k4'
       })
-    id: string;
+    orderDetailId: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     @ApiProperty({
@@ -20,23 +20,23 @@ export class OrderDetail {
       })
     price: number;
 
-    @OneToOne(() => order, (order) => order.orderDetail)
+    @OneToOne(() => Order, (order) => order.orderDetail)
     @ApiProperty({
         description: 'The order associated with these details',
-        type: () => order
+        type: () => Order
       })
-    order: order;
+    order: Order;
 
     @ManyToMany(() => Product)
     @JoinTable({
         name: 'ORDER_DETAIL_PRODUCTS',
         joinColumn: {
             name: 'orderdetail_id',
-            referencedColumnName: 'id'
+            referencedColumnName: 'orderDetailId'
         },
         inverseJoinColumn: {
             name: 'product_id',
-            referencedColumnName: 'id'
+            referencedColumnName: 'productId'
         }
     })
     @ApiProperty({

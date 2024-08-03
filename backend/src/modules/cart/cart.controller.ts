@@ -8,19 +8,19 @@ import { ApiParam, ApiTags } from "@nestjs/swagger";
 export class CartController {
   constructor(private readonly cartService: CartService) { }
 
-  @Post(':userId/item')
-  @ApiParam({ name: 'userId', required: true, description: 'The ID of the user' })
+  @Post(':id/item')
+  @ApiParam({ name: 'id', required: true, description: 'The ID of the user' })
   async addItem(
-    @Param('userId') userId: string,
-    @Body() products: { id: string, quantity: number }[],
+    @Param('id') id: string,
+    @Body() products: { productId: string, quantity: number }[],
   ) {
-    return this.cartService.addItem(userId, products);
+    return this.cartService.create(id, products);
   }
 
-  @Post(':userId/checkout')
-  @ApiParam({ name: 'userId', required: true, description: 'The ID of the user' })
-  async checkout(@Param('userId') userId: string) {
-    await this.cartService.checkout(userId);
+  @Post(':id/checkout')
+  @ApiParam({ name: 'id', required: true, description: 'The ID of the user' })
+  async checkout(@Param('id') id: string) {
+    await this.cartService.checkout(id);
   }
 
   // Otros endpoints como removeItem

@@ -16,26 +16,26 @@ export class CartRepository {
 
   ) { }
 
-  async create(userId: string, products: { id: string, quantity: number }[]): Promise<Cart> {
+  async create(id: string, products: { productId: string, quantity: number }[]): Promise<Cart> {
     let total = 0;
 
-    const user = await this.userRepository.findOneBy({ id: userId },);
-    if (!user) throw new Error(`User with id: ${userId} not found`);
-
+    const user = await this.userRepository.findOneBy({  id },);
+    if (!user) throw new Error(`User with id: ${id} not found`);
+ 
     const newCart = new Cart();
     /* newCart.date = new Date(); */
     newCart.user = user;
     const savedCart = await this.cartRepository.save(newCart);
 
     const productArray = await Promise.all(
-      products.map(async ({ id, quantity }) => {
-        const product = await this.productsRepository.findOneBy({ id });
-        if (!product) throw new NotFoundException(`Product with Id ${id} not found`);
+      products.map(async ({ productId, quantity }) => {
+        const product = await this.productsRepository.findOneBy({ productId });
+        if (!product) throw new NotFoundException(`Product with Id ${productId} not found`);
 
         total += Number(product.price) * quantity;
 
         await this.productsRepository.update(
-          { id },
+          { productId },
           { stock: product.stock - quantity },
         );
 

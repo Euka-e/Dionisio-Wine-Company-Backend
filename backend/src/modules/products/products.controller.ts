@@ -28,8 +28,8 @@ export class ProductsController {
     return this.productsService.findAll(pageNumber, limitNumber);
   }
 
-  @Get(':id')
-  findOne(@Param('id') product_id: string) {
+  @Get(':productId')
+  findOne(@Param('productId') product_id: string) {
     return this.productsService.findOne(product_id);
   }
   @Post()
@@ -37,16 +37,16 @@ export class ProductsController {
     return this.productsService.create(product);
   }
 
-  @Patch(':id')
+  @Patch(':productId')
   update(
-    @Param('id') product_id: string,
+    @Param('productId') product_id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productsService.update(product_id, updateProductDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') product_id: string) {
+  remove(@Param('productId') product_id: string) {
     return this.productsService.remove(product_id);
   }
 }

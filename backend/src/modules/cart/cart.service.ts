@@ -1,4 +1,3 @@
-import { AddItemDto } from './dto/addItem.dto';
 import { Injectable } from '@nestjs/common';
 import { CartRepository } from './cart.repository';
 
@@ -6,16 +5,16 @@ import { CartRepository } from './cart.repository';
 export class CartService {
   constructor(private readonly cartRepository: CartRepository) { }
   /* 
-    async createCart(userId: string) {
-      return await this.cartRepository.createCart(userId);
+    async createCart(id: string) {
+      return await this.cartRepository.createCart(id);
     } */
 
   //productId
-  async addItem(userId: string, products: { id: string, quantity: number }[]) {
-    return await this.cartRepository.create(userId, products);
+  create(id: string, products: { productId: string, quantity: number }[]) {
+    return this.cartRepository.create(id, products);
   }
 
-  async checkout(userId: string) {
-    /* return await this.cartRepository.checkout(userId); */
+  async checkout(id: string) {
+    /* return await this.cartRepository.checkout(id); */
   }
 }

@@ -146,3 +146,4 @@ dist
 .svelte-kit
 
 package-lock.json
+assets/products.json
