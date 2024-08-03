@@ -1,16 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Matches } from 'class-validator';
-import { Cart } from 'src/modules/cart/entities/cart.entity';
-import { Order } from 'src/modules/orders/entities/order.entity';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Role } from '../dto/roles.enum';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
+import { Cart } from "src/modules/cart/entities/cart.entity";
+import { Order } from "src/modules/orders/entities/order.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm";
 
 @Entity({ name: 'USERS' })
 export class User {
@@ -57,15 +49,12 @@ export class User {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({
-    description: 'Phone number of the user',
-    example: 1234567890,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^[+]?[0-9\s\-().]+$/, { message: 'Invalid phone number' })
-  @Column({ length: 20, default: '20000000000' })
-  phone: string;
+    @ApiProperty({
+        description: 'Password for the user',
+        example: 'SecurePassword123'
+    })
+    @Column({ length: 120, nullable: false })
+    password: string;
 
   @ApiProperty({
     description: 'Country of the user',
@@ -103,10 +92,14 @@ export class User {
   @JoinColumn()
   cart: Cart;
 
-  @ApiProperty({
-    description: 'List of orders associated with the user',
-    type: () => [Order],
-  })
-  @OneToMany(() => Order, (order) => order.user)
-  orders?: Order[];
+    @OneToOne(() => Cart, cart => cart.user)
+    @JoinColumn()
+    cart?: Cart;
+
+    @ApiProperty({
+        description: 'List of orders associated with the user',
+        type: () => [Order]
+    })
+    @OneToMany(() => Order, order => order.user)
+    orders?: Order[];
 }

@@ -5,25 +5,25 @@ import { OffersRepository } from './offers.repository';
 
 @Injectable()
 export class OffersService {
-  constructor(private offerRepository:OffersRepository) {}
-  
+  constructor(private offerRepository: OffersRepository) { }
+
   create(createOfferDto: CreateOfferDto) {
-    return this.offerRepository.create(createOfferDto) ;
+    return this.offerRepository.create(createOfferDto);
   }
 
   findAll() {
     return this.offerRepository.findAll();
   }
 
-  findOne(id: string) {
-    return this.offerRepository.findOne(id);
+  findOne(offerId: string) {
+    return this.offerRepository.findOne(offerId);
   }
 
-  update(id: string, updateOfferDto: UpdateOfferDto) {
-    return this.offerRepository.update(id, updateOfferDto);
+  update(offerId: string, updateOfferDto: UpdateOfferDto) {
+    return this.offerRepository.update(offerId, updateOfferDto);
   }
 
-  delete(id: string) {
-    return this.offerRepository.delete(id);
+  delete(offerId: string) {
+    return this.offerRepository.delete(offerId);
   }
 }

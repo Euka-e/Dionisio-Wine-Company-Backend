@@ -26,13 +26,11 @@ export class OrdersController {
   //! Verificar logica del Carrito de compra antes de poner una guarda a este POST
   @Post()
   create(@Body() order: CreateOrderDto) {
-    const { userId, products } = order;
-    return this.ordersService.create(userId, products);
-  }
-
+    const {id, products} = order;
+    return this.ordersService.create(id,products);
+}
   /*   @Get()
   //@UseGuards(AuthorizationGuard)
->>>>>>> origin/develop
   findAll() {
     return this.ordersService.findAll();
   } */

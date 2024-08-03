@@ -7,7 +7,7 @@ export class CreateOrderDto {
    */
   @IsNotEmpty()
   @IsUUID()
-  userId: string;
+  id: string;
 
   /**
    * @example 

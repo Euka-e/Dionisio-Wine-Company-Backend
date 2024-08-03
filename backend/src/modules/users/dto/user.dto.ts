@@ -136,31 +136,31 @@ export class LoginUserDto extends PickType(CreateUserDto, [
 ]) {}
 
 export class Auth0Dto {
-  @ApiProperty({
-    description: 'Id de usuario de google y auth0',
-    example: 'google-oauth2|1234567890',
-  })
-  @IsOptional()
-  @IsString()
-  id: string;
 
-  @ApiProperty({
-    description: 'Nombre del usuario',
-    minLength: 3,
-    maxLength: 80,
-    example: 'Juan Pérez',
-  })
-  @IsString()
-  @Length(3, 80)
-  name: string;
+    @ApiProperty({
+        description: 'Id de usuario de google y auth0',
+        example: 'google-oauth2|1234567890'
+    })
+    @IsOptional()
+    @IsString()
+    authId: string;
 
-  password?: string;
+    @ApiProperty({
+        description: 'Nombre del usuario',
+        minLength: 3,
+        maxLength: 80,
+        example: 'Juan Pérez'
+    })
+    @IsString()
+    @Length(3, 80)
+    name: string;
 
-  @ApiProperty({
-    description: 'Correo electrónico del usuario',
-    example: 'juan.perez@example.com',
-  })
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
+    @ApiProperty({
+        description: 'Correo electrónico del usuario',
+        example: 'juan.perez@example.com'
+    })
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
+
 }

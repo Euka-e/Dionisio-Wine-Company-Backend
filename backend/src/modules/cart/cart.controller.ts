@@ -1,41 +1,25 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
-import { Cart } from './entities/cart.entity';
-import { CartService } from './cart.service';
-import { Order } from '../orders/entities/order.entity';
-import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
-import { CartItem } from './entities/cartItem.entity';
-import { AddItemDto } from './dto/addItem.dto';
+import { Body, Controller, Param, Post } from "@nestjs/common";
+import { CartService } from "./cart.service";
+import { ApiParam, ApiTags } from "@nestjs/swagger";
 
 @Controller('cart')
 @ApiTags('Cart')
 export class CartController {
-  constructor(private readonly cartService: CartService) {}
+  constructor(private readonly cartService: CartService) { }
 
-  @Post(':userId/item')
-  @ApiParam({
-    name: 'userId',
-    required: true,
-    description: 'The ID of the user',
-  })
-  async addItemToCart(
-    @Param('userId') userId: string,
-    @Body() addItemDto: AddItemDto,
+  @Post(':id/item')
+  @ApiParam({ name: 'id', required: true, description: 'The ID of the user' })
+  async addItem(
+    @Param('id') id: string,
+    @Body() products: { productId: string, quantity: number }[],
   ) {
-    return this.cartService.addItemToCart(
-      userId,
-      addItemDto.productId,
-      addItemDto.quantity,
-    );
+    return this.cartService.create(id, products);
   }
 
-  @Post(':userId/checkout')
-  @ApiParam({
-    name: 'userId',
-    required: true,
-    description: 'The ID of the user',
-  })
-  async checkout(@Param('userId') userId: string) {
-    await this.cartService.checkout(userId);
+  @Post(':id/checkout')
+  @ApiParam({ name: 'id', required: true, description: 'The ID of the user' })
+  async checkout(@Param('id') id: string) {
+    await this.cartService.checkout(id);
   }
 
   // Otros endpoints como removeItem

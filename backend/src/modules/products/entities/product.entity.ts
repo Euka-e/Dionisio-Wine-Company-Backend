@@ -10,6 +10,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { CartDetail } from 'src/modules/cart/entities/cartDetail.entity';
 
 @Entity({ name: 'PRODUCTS' })
 export class Product {
@@ -18,7 +19,7 @@ export class Product {
     example: 'uuid',
   })
   @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  productId?: string;
 
   @ApiProperty({
     description: 'Name of the product',
@@ -88,5 +89,9 @@ export class Product {
     type: () => [OrderDetail],
   })
   @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)
-  orderDetails?: OrderDetail[];
+  orderDetail?: OrderDetail[];
+
+  @ManyToMany(() => CartDetail, (cartDetail) => cartDetail.products)
+  cartDetail?: CartDetail[];
+
 }

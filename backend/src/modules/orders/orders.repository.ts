@@ -1,29 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { OrderDetail } from './entities/orderDetail.entity';
-import { Order } from './entities/order.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
-import { Product } from '../products/entities/product.entity';
-import { Repository } from 'typeorm';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { OrderDetail } from "./entities/orderDetail.entity";
+import { Order } from "./entities/order.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../users/entities/user.entity";
+import { Product } from "../products/entities/product.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class OrdersRepository {
   constructor(
     @InjectRepository(Order) private ordersRepository: Repository<Order>,
-    @InjectRepository(OrderDetail)
-    private ordersDetailRepository: Repository<OrderDetail>,
+    @InjectRepository(OrderDetail) private ordersDetailRepository: Repository<OrderDetail>,
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
-  async create(
-    userId: string,
-    products: { id: string; quantity: number }[],
-  ): Promise<Order> {
+  async create(id: string, products: { productId: string, quantity: number }[]): Promise<Order> {
     let total = 0;
 
-    const user = await this.usersRepository.findOneBy({ id: userId });
-    if (!user) throw new NotFoundException(`User with Id ${userId} not found`);
+    const user = await this.usersRepository.findOneBy({ id: id });
+    if (!user) throw new NotFoundException(`User with Id ${id} not found`);
 
     const newOrder = new Order();
     newOrder.date = new Date();
@@ -31,15 +27,14 @@ export class OrdersRepository {
     const savedOrder = await this.ordersRepository.save(newOrder);
 
     const productArray = await Promise.all(
-      products.map(async ({ id, quantity }) => {
-        const product = await this.productsRepository.findOneBy({ id });
-        if (!product)
-          throw new NotFoundException(`Product with Id ${id} not found`);
+      products.map(async ({ productId, quantity }) => {
+        const product = await this.productsRepository.findOneBy({ productId });
+        if (!product) throw new NotFoundException(`Product with Id ${productId} not found`);
 
         total += Number(product.price) * quantity;
 
         await this.productsRepository.update(
-          { id },
+          { productId },
           { stock: product.stock - quantity },
         );
 
@@ -55,14 +50,14 @@ export class OrdersRepository {
     await this.ordersDetailRepository.save(orderDetail);
 
     return await this.ordersRepository.findOne({
-      where: { id: savedOrder.id },
+      where: { orderId: savedOrder.orderId },
       relations: { orderDetail: true },
     });
   }
 
   findOne(id: string) {
     const order = this.ordersRepository.findOne({
-      where: { id },
+      where: { orderId:id },
       relations: { orderDetail: { products: true } },
     });
 

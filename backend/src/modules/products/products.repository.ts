@@ -32,7 +32,7 @@ export class ProductsRepository {
   async findOne(product_id: string) {
     try {
       const options: FindOneOptions<Product> = {
-        where: { id: product_id },
+        where: { productId: product_id },
         relations: ['category'],
       };
 
@@ -55,7 +55,7 @@ export class ProductsRepository {
     try {
       const newProduct = await this.productsRepository.save(product);
       const findProduct = await this.productsRepository.findOneBy({
-        id: newProduct.id,
+        productId: newProduct.productId,
       });
       return { message: 'Producto añadido', findProduct };
     } catch (error) {
@@ -71,7 +71,7 @@ export class ProductsRepository {
 
   async remove(product_id: string) {
     const product = await this.productsRepository.findOneBy({
-      id: product_id,
+      productId: product_id,
     });
     this.productsRepository.remove(product);
     return 'Producto Eliminado';

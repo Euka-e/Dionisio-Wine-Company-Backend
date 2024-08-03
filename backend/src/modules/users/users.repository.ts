@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersRepository {
@@ -89,12 +90,11 @@ export class UsersRepository {
   async createAuth0User(userDto: any) {
     try {
       const user = new User();
-      user.id = uuidv4();
       user.authId = userDto.authId;
       user.name = userDto.name;
       user.email = userDto.email;
-      user.password = 'Password01@';
-
+      const encryptedPassword = await bcrypt.hash(userDto.authId, 10);
+      user.password = encryptedPassword;
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
       const { role, ...finalUser } = findUser;
