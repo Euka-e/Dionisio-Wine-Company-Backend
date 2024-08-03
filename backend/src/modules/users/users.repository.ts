@@ -1,28 +1,35 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { User } from "./entities/user.entity";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Auth0Dto, CreateUserDto, UpdateUserDto } from "./dto/user.dto";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersRepository {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>
-  ) { }
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) {}
 
   async getUsers(page: number, limit: number) {
     try {
       const skip = (page - 1) * limit;
       const users = await this.usersRepository.find({
         take: limit,
-        skip: skip
+        skip: skip,
       });
-      return users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+
+      return users;
     } catch (error) {
       console.error('Error obteniendo los usuarios:', error);
-      throw new InternalServerErrorException('No se pudieron obtener los usuarios.');
+      throw new InternalServerErrorException(
+        'No se pudieron obtener los usuarios.',
+      );
     }
   }
 
@@ -30,21 +37,24 @@ export class UsersRepository {
     try {
       const user = await this.usersRepository.findOne({
         where: { id },
-        relations: { orders: true }
+        relations: { orders: true },
       });
       if (!user) {
-        throw new NotFoundException(`No se encontró el usuario con el id ${id}`);
+        throw new NotFoundException(
+          `No se encontró el usuario con el id ${id}`,
+        );
       }
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } catch (error) {
       console.error(`Error obteniendo el usuario con el id ${id}:`, error);
-      throw new InternalServerErrorException(`No se pudo obtener el usuario con id ${id}.`);
+      throw new InternalServerErrorException(
+        `No se pudo obtener el usuario con id ${id}.`,
+      );
     }
   }
 
   async findByEmail(email: string) {
-
     try {
       const user = await this.usersRepository.findOneBy({ email });
       if (!user) {
@@ -52,9 +62,10 @@ export class UsersRepository {
       }
       return user;
     } catch (error) {
-      throw new NotFoundException(`No se encontró el usuario con el email ${email}`);
+      throw new NotFoundException(
+        `No se encontró el usuario con el email ${email}`,
+      );
     }
-
   }
 
   async createUser(user: CreateUserDto) {
@@ -68,7 +79,7 @@ export class UsersRepository {
 
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
-      const { isAdmin, ...finalUser } = findUser;
+      const { role, ...finalUser } = findUser;
       return finalUser;
     } catch (error) {
       console.error('Error creando usuario:', error.message);
@@ -76,7 +87,7 @@ export class UsersRepository {
     }
   }
 
-  async createAuth0User(userDto: Auth0Dto) {
+  async createAuth0User(userDto: any) {
     try {
       const user = new User();
       user.authId = userDto.authId;
@@ -86,7 +97,7 @@ export class UsersRepository {
       user.password = encryptedPassword;
       const newUser = await this.usersRepository.save(user);
       const findUser = await this.usersRepository.findOneBy({ id: newUser.id });
-      const { isAdmin, ...finalUser } = findUser;
+      const { role, ...finalUser } = findUser;
       return finalUser;
     } catch (error) {
       console.error('Error creando usuario:', error.message);
@@ -99,13 +110,17 @@ export class UsersRepository {
       await this.usersRepository.update(id, user);
       const updatedUser = await this.usersRepository.findOneBy({ id });
       if (!updatedUser) {
-        throw new NotFoundException(`No se encontró el usuario con el id ${id}`);
+        throw new NotFoundException(
+          `No se encontró el usuario con el id ${id}`,
+        );
       }
-      const { password, isAdmin, ...finalUser } = updatedUser;
+      const { password, role, ...finalUser } = updatedUser;
       return finalUser;
     } catch (error) {
       console.error(`Error actualizando el usuario con el id ${id}:`, error);
-      throw new InternalServerErrorException(`No se pudo actualizar el usuario con el id ${id}.`);
+      throw new InternalServerErrorException(
+        `No se pudo actualizar el usuario con el id ${id}.`,
+      );
     }
   }
 
@@ -113,15 +128,18 @@ export class UsersRepository {
     try {
       const user = await this.usersRepository.findOneBy({ id });
       if (!user) {
-        throw new NotFoundException(`No se encontró el usuario con el id ${id}`);
+        throw new NotFoundException(
+          `No se encontró el usuario con el id ${id}`,
+        );
       }
       await this.usersRepository.remove(user);
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } catch (error) {
       console.error(`Error eliminando el usuario con el id ${id}:`, error);
-      throw new InternalServerErrorException(`No se pudo eliminar el usuario con el id ${id}.`);
+      throw new InternalServerErrorException(
+        `No se pudo eliminar el usuario con el id ${id}.`,
+      );
     }
   }
-
 }

@@ -54,7 +54,6 @@ export class CartRepository {
       where: { cartId: savedCart.cartId },
       relations: { cartDetail: true },
     });
-
   }
 
   /* async checkout(userId: string): Promise<void> {
@@ -69,7 +68,7 @@ export class CartRepository {
 
     const cart = user.cart;
 
-    const products = cart.items.map(item => ({
+    const products = cart.items.map((item) => ({
       id: item.productId,
       quantity: item.quantity,
     }));
@@ -80,4 +79,5 @@ export class CartRepository {
     cart.total = 0;
     await this.cartRepository.save(cart);
   } */
+
 }

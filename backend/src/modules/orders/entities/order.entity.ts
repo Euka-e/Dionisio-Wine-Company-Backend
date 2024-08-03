@@ -1,7 +1,14 @@
-import { User } from "src/modules/users/entities/user.entity";
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToOne, JoinColumn } from "typeorm";
-import { OrderDetail } from "./orderDetail.entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { User } from 'src/modules/users/entities/user.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { OrderDetail } from './orderDetail.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'ORDERS' })
 export class Order {

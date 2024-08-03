@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
 import { Product } from "../../products/entities/product.entity";
 import { ApiProperty } from "@nestjs/swagger";
@@ -13,12 +20,12 @@ export class OrderDetail {
       })
     orderDetailId: string;
 
-    @Column({ type: 'decimal', precision: 10, scale: 2 })
-    @ApiProperty({
-        description: 'The price of the order detail',
-        example: 99.99
-      })
-    price: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @ApiProperty({
+    description: 'The price of the order detail',
+    example: 99.99,
+  })
+  price: number;
 
     @OneToOne(() => Order, (order) => order.orderDetail)
     @ApiProperty({
@@ -45,3 +52,4 @@ export class OrderDetail {
       })
     products: Product[];
 }
+
