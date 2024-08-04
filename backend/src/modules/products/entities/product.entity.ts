@@ -10,7 +10,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { CartDetail } from 'src/modules/cart/entities/cartDetail.entity';
+import { CartDetail } from 'src/modules/cart/entities/cartdetail.entity';
 
 @Entity({ name: 'PRODUCTS' })
 export class Product {
