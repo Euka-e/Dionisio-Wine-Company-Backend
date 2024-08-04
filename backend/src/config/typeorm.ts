@@ -8,7 +8,7 @@ import { Category } from 'src/modules/categories/entities/category.entity';
 import { config as dotenvConfig } from 'dotenv';
 import { Offer } from 'src/modules/offers/entities/offer.entity';
 import { Cart } from 'src/modules/cart/entities/cart.entity';
-import { CartDetail } from 'src/modules/cart/entities/cartDetail.entity';
+import { CartDetail } from 'src/modules/cart/entities/cartdetail.entity';
 
 dotenvConfig({ path: '.env.development' });
 

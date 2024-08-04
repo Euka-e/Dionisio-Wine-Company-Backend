@@ -1,4 +1,4 @@
-import { CartDetail } from 'src/modules/cart/entities/cartDetail.entity';
+import { CartDetail } from 'src/modules/cart/entities/cartdetail.entity';
 import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
