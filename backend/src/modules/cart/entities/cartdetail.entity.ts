@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne,
 import { Cart } from './cart.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
 
-@Entity({ name: 'CART_ITEMS' })
+@Entity({ name: 'CART_DETAIL' })
 export class CartDetail {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
