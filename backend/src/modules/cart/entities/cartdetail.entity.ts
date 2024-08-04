@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne,
 import { Cart } from './cart.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
 
-@Entity({ name: 'CART_ITEMS' })
+@Entity({ name: 'CART_DETAIL' })
 export class CartDetail {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
@@ -35,11 +35,11 @@ export class CartDetail {
     description: 'The list of products in the cart detail',
     type: () => [Product]
   })
-  products: Product[];
+  products: Product[]; //Product 1:3       Product 2:2        Product 3:1
 
   @Column('int')
   @ApiProperty({ description: 'The quantity of the product in the cart' })
-  quantity: number;
+  quantity: number;  // 3 productos
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   @ApiProperty({ description: 'The price of the product in the cart' })
