@@ -70,8 +70,8 @@ export class User {
   @Column({ length: 50, default: 'Default City' })
   city: string;
 
-  @Column({ default: '01/01/0001' })
-  date: Date;
+  @Column({ nullable: true, type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date?: Date;
 
   @ApiProperty({
     description: 'Indicates if the user has admin privileges',

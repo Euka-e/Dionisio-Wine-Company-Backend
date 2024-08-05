@@ -62,17 +62,15 @@ export class UsersRepository {
       }
       return user;
     } catch (error) {
-      throw new NotFoundException(
-        `No se encontró el usuario con el email ${email}`,
-      );
+      throw new NotFoundException(`No se encontró el usuario con el email ${email}`);
     }
   }
 
   async createUser(user: CreateUserDto) {
-    const { email} = user;
+    const { email, date } = user;
     try {
-      if (typeof user.date === 'string') {
-        user.date = new Date(user.date);
+      if (typeof date === 'string') {
+        user.date = new Date(date);
       }
 
       await this.usersRepository.save(user);

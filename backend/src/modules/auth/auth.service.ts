@@ -10,9 +10,8 @@ export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly usersService: UsersService,
-
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signIn(email: string, password: string) {
     const user = await this.usersRepository.findByEmail(email);
@@ -43,23 +42,24 @@ export class AuthService {
   }
 
   async signUp(user: CreateUserDto) {
-    const { email, password } = user;
+    const { email, password, date } = user;
 
     const findUser = await this.usersRepository.findByEmail(email);
-    if (findUser)
-      throw new BadRequestException(
-        `El email ${email} ya se encuentra registrado`,
-      );
+    if (findUser) {
+      throw new BadRequestException(`El email ${email} ya se encuentra registrado`);
+    }
 
     const encryptedPassword = await bcrypt.hash(password, 10);
 
-    const date = new Date(user.date);
-
     const newUser = {
       ...user,
-      date: user.date,
       password: encryptedPassword,
     };
+
+    if (date && !(date instanceof Date)) {
+      newUser.date = new Date(date);
+    }
+
     return await this.usersRepository.createUser(newUser);
   }
 
@@ -67,39 +67,36 @@ export class AuthService {
     if (!userDto.authId || !userDto.email || !userDto.name) {
       throw new BadRequestException('Missing required fields');
     }
-    const { authId, email, name} = userDto;
-    const newUser = {
-      password: authId,
-      confirmPassword: authId,
-      name: name,
-      authId:authId,
-      email: email
-    }
-    try {
-      let user = this.usersRepository.findByEmail(email);
 
-      if (user) {
-        console.log(`Usuario encontrado de primeras: ${JSON.stringify(user)}`);
-      } else {
-        user = this.signUp(newUser);
-        const findUser = await this.usersRepository.findByEmail(email);
-        console.log(`Usuario creado correctamente: ${JSON.stringify(findUser)}`);
-        return this.signIn(email,authId);
+    const { authId, email, name } = userDto;
+
+    try {
+      let user = await this.usersRepository.findByEmail(email);
+      console.log('Usuario encontrado de primeras:', user);
+
+      if (!user) {
+        console.log('Usuario no encontrado, creando nuevo usuario');
+        const newUserDto: CreateUserDto = {
+          name: name,
+          authId: authId,
+          email: email,
+          password: authId,
+          confirmPassword: authId,
+        };
+        await this.signUp(newUserDto);
+        user = await this.usersRepository.findByEmail(email);
+        console.log('Usuario creado:', user);
       }
 
-      const findUser = await this.usersRepository.findByEmail(email);
-      if (findUser) {
-        return await this.signIn(email,authId);
+      if (user) {
+        console.log('Usuario encontrado para el inicio de sesión:', user);
+        return await this.signIn(email, authId);
       } else {
-        console.error(`authId del usuario: ${findUser.authId}, id recibido: ${findUser.id}`);
-        throw new BadRequestException(
-          'No se pudo iniciar sesión, algunos campos son incorrectos',
-        );
+        throw new BadRequestException('User could not be created or found');
       }
     } catch (error) {
       console.error('Error en handleUser:', error.message);
-      throw new BadRequestException('No se pudo iniciar sesión con Auth0');
+      throw new BadRequestException('Error handling user with Auth0');
     }
   }
-
 }
