@@ -13,7 +13,7 @@ export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-  ) {}
+  ) { }
 
   async findAll(page: number = 1, limit: number = 10) {
     const [products, total] = await this.productsRepository.findAndCount({
@@ -57,16 +57,34 @@ export class ProductsRepository {
       const findProduct = await this.productsRepository.findOneBy({
         productId: newProduct.productId,
       });
-      return { message: 'Producto añadido', findProduct };
+      return { message: 'Added Product', findProduct };
     } catch (error) {
-      console.error('Error al añadir el producto', error.message);
-      throw new InternalServerErrorException('No se pudo añadir el producto.');
+      console.error('Error adding product', error.message);
+      throw new InternalServerErrorException('Product could not be added');
     }
   }
 
+  async restock(productId: string, stock?: number) {
+    try {
+      const product = await this.productsRepository.findOne({ where: { productId } });
+
+      if (!product) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      product.stock = stock !== undefined ? stock : 20;
+
+      await this.productsRepository.save(product);
+
+      return `Product has been updated to stock level ${product.stock}`;
+    } catch (error) {
+      console.error(`Error updating stock for product with id ${productId}:`, error);
+      return `Failed to update stock for product with id ${productId}.`;
+    }
+  }
   async update(product_id: string, updateProductDto: UpdateProductDto) {
     await this.productsRepository.update(product_id, updateProductDto);
-    return 'Producto Actualizado';
+    return 'Updated Product';
   }
 
   async remove(product_id: string) {
@@ -74,6 +92,6 @@ export class ProductsRepository {
       productId: product_id,
     });
     this.productsRepository.remove(product);
-    return 'Producto Eliminado';
+    return 'Deleted Product';
   }
 }

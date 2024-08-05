@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Cart } from './cart.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
+import { CartItem } from './cart.item.entity';
 
 @Entity({ name: 'CART_DETAIL' })
 export class CartDetail {
@@ -12,36 +13,21 @@ export class CartDetail {
   })
   cartDetailId: string;
 
-  @OneToOne(() => Cart, (cart) => cart.cartDetail,  { onDelete: 'CASCADE' })
+  @OneToOne(() => Cart, (cart) => cart.cartDetail, { onDelete: 'CASCADE' })
   @ApiProperty({
-    description: 'The order associated with these details',
+    description: 'The cart associated with these details',
     type: () => Cart
   })
   cart: Cart;
 
-  @ManyToMany(() => Product)
-  @JoinTable({
-    name: 'CART_DETAIL_PRODUCTS',
-    joinColumn: {
-      name: 'cartdetail_id',
-      referencedColumnName: 'cartDetailId'
-    },
-    inverseJoinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'productId'
-    }
-  })
+  @OneToMany(() => CartItem, (cartItem) => cartItem.cartDetail, { cascade: true })
   @ApiProperty({
-    description: 'The list of products in the cart detail',
-    type: () => [Product]
+    description: 'The list of cart items in the cart detail',
+    type: () => [CartItem]
   })
-  products: Product[]; //Product 1:3       Product 2:2        Product 3:1
+  items: CartItem[];
 
-  @Column('int')
-  @ApiProperty({ description: 'The quantity of the product in the cart' })
-  quantity: number;  // 3 productos
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  @ApiProperty({ description: 'The price of the product in the cart' })
-  price: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @ApiProperty({ description: 'The total price of the cart detail' })
+  total: number;
 }

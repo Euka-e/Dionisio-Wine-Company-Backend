@@ -13,7 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { CartModule } from './modules/cart/cart.module';
 import { PaymentModule } from './modules/payment/payment.module';
-import { StripeService } from './services/stripe/stripe.service';
 
 @Module({
   imports: [
@@ -46,6 +45,6 @@ import { StripeService } from './services/stripe/stripe.service';
     PaymentModule
   ],
   controllers: [AppController],
-  providers: [AppService, StripeService],
+  providers: [AppService],
 })
 export class AppModule { }
