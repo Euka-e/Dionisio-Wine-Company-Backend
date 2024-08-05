@@ -91,7 +91,7 @@ export class Product {
   @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)
   orderDetail?: OrderDetail[];
 
-  @ManyToMany(() => CartDetail, (cartDetail) => cartDetail.products)
+  @ManyToMany(() => CartDetail, (cartDetail) => cartDetail.items)
   cartDetail?: CartDetail[];
 
 }

@@ -22,7 +22,7 @@ import { Role } from '../users/dto/roles.enum';
 @Controller('products')
 @ApiTags('Products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService) { }
 
   //! Si el usuario puede comprar productos sin tener una cuenta, entonces la guarda aca puede dar conflictos
   @Get()
@@ -46,7 +46,7 @@ export class ProductsController {
     return this.productsService.create(product);
   }
 
-  @Patch(':productId')
+  @Patch(':productId/update')
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
   update(
@@ -54,6 +54,15 @@ export class ProductsController {
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productsService.update(product_id, updateProductDto);
+  }
+
+  @Post(':productId/updateStock')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  restock(
+    @Param('productId', ParseUUIDPipe) product_id: string,
+    @Body('stock') stock?: number) {
+    return this.productsService.restock(product_id, stock)
   }
 
   @Delete(':id')
