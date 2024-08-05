@@ -12,7 +12,7 @@ export class CartDetail {
   })
   cartDetailId: string;
 
-  @OneToOne(() => Cart, (cart) => cart.cartDetail)
+  @OneToOne(() => Cart, (cart) => cart.cartDetail,  { onDelete: 'CASCADE' })
   @ApiProperty({
     description: 'The order associated with these details',
     type: () => Cart
@@ -35,11 +35,11 @@ export class CartDetail {
     description: 'The list of products in the cart detail',
     type: () => [Product]
   })
-  products: Product[];
+  products: Product[]; //Product 1:3       Product 2:2        Product 3:1
 
   @Column('int')
   @ApiProperty({ description: 'The quantity of the product in the cart' })
-  quantity: number;
+  quantity: number;  // 3 productos
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   @ApiProperty({ description: 'The price of the product in the cart' })

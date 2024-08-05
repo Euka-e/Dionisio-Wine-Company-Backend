@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { CartService } from "./cart.service";
 import { ApiParam, ApiTags } from "@nestjs/swagger";
 
@@ -6,6 +6,16 @@ import { ApiParam, ApiTags } from "@nestjs/swagger";
 @ApiTags('Cart')
 export class CartController {
   constructor(private readonly cartService: CartService) { }
+
+  @Get()
+  async findAll() {
+    return this.cartService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.cartService.findOne(id);
+  }
 
   @Post(':id/item')
   @ApiParam({ name: 'id', required: true, description: 'The ID of the user' })
@@ -19,8 +29,12 @@ export class CartController {
   @Post(':id/checkout')
   @ApiParam({ name: 'id', required: true, description: 'The ID of the user' })
   async checkout(@Param('id') id: string) {
-    await this.cartService.checkout(id);
+    return await this.cartService.checkout(id);
   }
 
-  // Otros endpoints como removeItem
+  @Delete(':id')
+  async deleteCart(@Param('id') id: string){
+    return await this.cartService.delete(id);
+  }
+
 }

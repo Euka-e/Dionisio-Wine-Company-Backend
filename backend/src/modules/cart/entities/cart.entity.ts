@@ -19,7 +19,7 @@ export class Cart {
   })
   date: Date; */
 
-  @OneToOne(() => User, user => user.cart)
+  @OneToOne(() => User, user => user.cart,  { onDelete: 'CASCADE' })
   @JoinColumn({ name: "user_id" })
   @ApiProperty({ description: 'The user who owns this cart' })
   user: User;
