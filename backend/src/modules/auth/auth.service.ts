@@ -76,12 +76,12 @@ export class AuthService {
       email: email
     }
     try {
-      let user = await this.usersRepository.findByEmail(email);
+      let user = this.usersRepository.findByEmail(email);
 
       if (user) {
         console.log(`Usuario encontrado de primeras: ${JSON.stringify(user)}`);
       } else {
-        user = await this.signUp(newUser);
+        user = this.signUp(newUser);
         const findUser = await this.usersRepository.findByEmail(email);
         console.log(`Usuario creado correctamente: ${JSON.stringify(findUser)}`);
         return this.signIn(email,authId);

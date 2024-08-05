@@ -44,4 +44,8 @@ export class CategoryRepository {
 
     return 'Category successfully added';
   }
+
+  async delete(category_id: string) {
+    return await this.categoryRepository.delete({ categoryId: category_id });
+  }
 }
