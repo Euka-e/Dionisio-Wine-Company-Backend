@@ -22,7 +22,7 @@ export class AuthService {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) throw new BadRequestException('Contraseña incorrecta');
 
-    const payload = { id: user.id, email: user.email, isAdmin: user.role };
+    const payload = { id: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
     return { message: 'Usuario logueado', token };
   }
@@ -34,7 +34,7 @@ export class AuthService {
         throw new BadRequestException('Usuario no encontrado');
       }
 
-      const payload = { id: user.id, email: user.email, isAdmin: user.role };
+      const payload = { id: user.id, email: user.email, role: user.role };
       const token = this.jwtService.sign(payload);
       return { message: 'Usuario logueado', token };
     } catch (error) {
