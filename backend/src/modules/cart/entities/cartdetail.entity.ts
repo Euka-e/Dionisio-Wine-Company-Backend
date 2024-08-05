@@ -12,7 +12,7 @@ export class CartDetail {
   })
   cartDetailId: string;
 
-  @OneToOne(() => Cart, (cart) => cart.cartDetail)
+  @OneToOne(() => Cart, (cart) => cart.cartDetail,  { onDelete: 'CASCADE' })
   @ApiProperty({
     description: 'The order associated with these details',
     type: () => Cart
