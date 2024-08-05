@@ -14,8 +14,13 @@ export class CategoriesService {
   findOne(category_id: string) {
     return this.categoryRepository.findOne(category_id);
   }
+  
   create(createCategoryDto: CreateCategoryDto) {
     return this.categoryRepository.create(createCategoryDto);
+  }
+
+  remove(category_id: string) {
+    return this.categoryRepository.delete(category_id);
   }
 
 }

@@ -6,6 +6,8 @@ import {
   Param,
   Query,
   UseGuards,
+  ParseUUIDPipe,
+  Delete,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -18,7 +20,7 @@ import { RolesGuard } from '../auth/guards/role.guard';
 @Controller('categories')
 @ApiTags('Categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) { }
 
   @Get()
   async findAll(
@@ -31,7 +33,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') category_id: string) {
+  findOne(@Param('id', ParseUUIDPipe) category_id: string) {
     return this.categoriesService.findOne(category_id);
   }
 
@@ -41,4 +43,12 @@ export class CategoriesController {
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
+
+  @Delete(':id')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  remove(@Param('id', ParseUUIDPipe) category_id: string) {
+    return this.categoriesService.remove(category_id);
+  }
+  
 }
