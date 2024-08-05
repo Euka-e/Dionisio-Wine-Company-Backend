@@ -16,6 +16,7 @@ import {
   IsDateString,
   IsOptional,
   MaxLength,
+  IsEnum,
 } from 'class-validator';
 import { PasswordMatch } from '../../../decorators/passwordMatch.decorator';
 import { Role } from './roles.enum';
@@ -133,6 +134,7 @@ export class CreateUserDto {
 
   @ApiHideProperty()
   @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
+  /* @IsEnum(Role) */ //? Si agregamos esta propiedad, podemos hacer un patch para cambiar el rol de un usuario
   role?: Role;
 }
 

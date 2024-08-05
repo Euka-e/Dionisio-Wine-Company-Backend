@@ -12,6 +12,8 @@ import { typeOrmConfig } from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { CartModule } from './modules/cart/cart.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { StripeService } from './services/stripe/stripe.service';
 
 @Module({
   imports: [
@@ -40,9 +42,10 @@ import { CartModule } from './modules/cart/cart.module';
       isGlobal: true,
       envFilePath: '.env.development',
     }),
-    AuthModule
+    AuthModule,
+    PaymentModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, StripeService],
 })
 export class AppModule { }
