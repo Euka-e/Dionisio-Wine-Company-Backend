@@ -45,7 +45,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Patch(':id')
-  @Roles(Role.User)
+  @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
   updateUser(
     @Param('id', ParseUUIDPipe) id: string,
