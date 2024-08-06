@@ -1,55 +1,40 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToOne,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from './order.entity';
+import { Product } from '../../products/entities/product.entity';
 
-import { Product } from "../../products/entities/product.entity";
-import { ApiProperty } from "@nestjs/swagger";
-import { Order } from "./order.entity";
-
-@Entity({ name: 'ORDERDETAILS' })
+@Entity({ name: 'ORDER_DETAIL' })
 export class OrderDetail {
-    @PrimaryGeneratedColumn('uuid')
-    @ApiProperty({
-        description: 'The unique identifier for the order detail',
-        example: 'z9y8x7w6-v5u4-t3s2-r1q0-p9o8n7m6l5k4'
-      })
-    orderDetailId: string;
+  @PrimaryGeneratedColumn('uuid')
+  @ApiProperty({
+    description: 'The unique identifier of the order detail',
+    example: 'a9b8c7d6-e5f4-g3h2-i1j0-k9l8m7n6o5p4'
+  })
+  orderDetailId: string;
+
+  @ManyToOne(() => Order, (order) => order.details, { onDelete: 'CASCADE' })
+  @ApiProperty({
+    description: 'The order associated with these details',
+    type: () => Order
+  })
+  order: Order;
+
+  @ManyToOne(() => Product)
+  @ApiProperty({
+    description: 'The product in the order detail',
+    type: () => Product
+  })
+  product: Product;
+
+  @Column('int')
+  @ApiProperty({ description: 'The quantity of the product in the order detail' })
+  quantity: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  @ApiProperty({
-    description: 'The price of the order detail',
-    example: 99.99,
-  })
+  @ApiProperty({ description: 'The price of the product in the order detail' })
   price: number;
 
-    @OneToOne(() => Order, (order) => order.orderDetail)
-    @ApiProperty({
-        description: 'The order associated with these details',
-        type: () => Order
-      })
-    order: Order;
-
-    @ManyToMany(() => Product)
-    @JoinTable({
-        name: 'ORDER_DETAIL_PRODUCTS',
-        joinColumn: {
-            name: 'orderdetail_id',
-            referencedColumnName: 'orderDetailId'
-        },
-        inverseJoinColumn: {
-            name: 'product_id',
-            referencedColumnName: 'productId'
-        }
-    })
-    @ApiProperty({
-        description: 'The list of products in the order detail',
-        type: () => [Product]
-      })
-    products: Product[];
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @ApiProperty({ description: 'The total price for this product in the order detail' })
+  total: number;
 }
-

@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { CartItem } from '../cart/entities/cart.item.entity';
+import { User } from '../users/entities/user.entity';
 import { OrdersRepository } from './orders.repository';
 
 @Injectable()
 export class OrdersService {
-  constructor(private ordersRepository:OrdersRepository) {}
+  constructor(
+    private readonly ordersRepository: OrdersRepository) { }
 
-  create(id:string, products:any) {
-      return this.ordersRepository.create(id, products);
-  }
-
-  findOne(id:string) {
-      return this.ordersRepository.findOne(id)
+  async createOrderFromCart(cartItems: CartItem[], userId: string) {
+    return await this.ordersRepository.createOrderFromCart(cartItems, userId);
   }
 }

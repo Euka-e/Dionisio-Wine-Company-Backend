@@ -88,7 +88,7 @@ export class Product {
     description: 'Order details associated with the product',
     type: () => [OrderDetail],
   })
-  @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)
+  @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
   orderDetail?: OrderDetail[];
 
   @ManyToMany(() => CartDetail, (cartDetail) => cartDetail.items)

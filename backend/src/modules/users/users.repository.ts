@@ -23,8 +23,13 @@ export class UsersRepository {
         take: limit,
         skip: skip,
       });
-
-      return users;
+      const passwordlessUsers = users.map((user) => {
+        const usersArray = [];
+        const { password, ...userWithoutPassword } = user;
+        usersArray.push(userWithoutPassword);
+        return usersArray;
+      })
+      return passwordlessUsers;
     } catch (error) {
       console.error('Error obteniendo los usuarios:', error);
       throw new InternalServerErrorException(
@@ -44,8 +49,7 @@ export class UsersRepository {
           `No se encontró el usuario con el id ${id}`,
         );
       }
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
+      return user;
     } catch (error) {
       console.error(`Error obteniendo el usuario con el id ${id}:`, error);
       throw new InternalServerErrorException(
