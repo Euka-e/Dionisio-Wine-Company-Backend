@@ -3,7 +3,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
 import { Order } from 'src/modules/orders/entities/order.entity';
-import { OrderDetail } from 'src/modules/orders/entities/orderDetail.entity';
+import { OrderDetail } from 'src/modules/orders/entities/orderdetail.entity';
 import { Category } from 'src/modules/categories/entities/category.entity';
 import { config as dotenvConfig } from 'dotenv';
 import { Offer } from 'src/modules/offers/entities/offer.entity';
