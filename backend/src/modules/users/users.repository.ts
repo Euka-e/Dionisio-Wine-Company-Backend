@@ -85,8 +85,12 @@ export class UsersRepository {
       const findUser = await this.findByEmail(email);
       const { role, ...finalUser } = findUser;
 
-      await this.mailingService.sendWelcomeEmail(email);
-      console.log('Correo de bienvenida enviado correctamente');
+      try {
+        await this.mailingService.sendWelcomeEmail(email);
+        console.log('Correo de bienvenida enviado correctamente');
+      } catch (mailError) {
+        console.error('Error al enviar el correo:', mailError.message);
+      }
 
       return finalUser;
     } catch (error) {
@@ -107,6 +111,14 @@ export class UsersRepository {
       await this.usersRepository.save(user);
       const findUser = await this.findByEmail(email);
       const { role, ...finalUser } = findUser;
+
+      try {
+        await this.mailingService.sendWelcomeEmail(email);
+        console.log('Correo de bienvenida enviado correctamente');
+      } catch (mailError) {
+        console.error('Error al enviar el correo:', mailError.message);
+      }
+
       return finalUser;
     } catch (error) {
       console.error('Error creando usuario:', error.message);
