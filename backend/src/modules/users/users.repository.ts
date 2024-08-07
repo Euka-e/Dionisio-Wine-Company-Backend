@@ -8,13 +8,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
+import { MailingService } from '../mailing/mailing.service';
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) { }
+    private readonly mailingService: MailingService,
+  ) {}
 
   async getUsers(page: number, limit: number) {
     try {
@@ -28,7 +30,7 @@ export class UsersRepository {
         const { password, ...userWithoutPassword } = user;
         usersArray.push(userWithoutPassword);
         return usersArray;
-      })
+      });
       return passwordlessUsers;
     } catch (error) {
       console.error('Error obteniendo los usuarios:', error);
@@ -66,7 +68,9 @@ export class UsersRepository {
       }
       return user;
     } catch (error) {
-      throw new NotFoundException(`No se encontró el usuario con el email ${email}`);
+      throw new NotFoundException(
+        `No se encontró el usuario con el email ${email}`,
+      );
     }
   }
 
@@ -80,6 +84,10 @@ export class UsersRepository {
       await this.usersRepository.save(user);
       const findUser = await this.findByEmail(email);
       const { role, ...finalUser } = findUser;
+
+      await this.mailingService.sendWelcomeEmail(email);
+      console.log('Correo de bienvenida enviado correctamente');
+
       return finalUser;
     } catch (error) {
       console.error('Error creando usuario:', error.message);
