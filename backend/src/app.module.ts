@@ -45,6 +45,7 @@ import { MailingModule } from './modules/mailing/mailing.module';
     }),
     AuthModule,
     PaymentModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
