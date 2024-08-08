@@ -6,9 +6,10 @@ import { Offer } from './entities/offer.entity';
 import { Product } from '../products/entities/product.entity';
 import { OffersRepository } from './offers.repository';
 import { Category } from '../categories/entities/category.entity';
+import { DiscountCode } from './entities/discountCode.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Offer, Product, Category])],
+  imports: [TypeOrmModule.forFeature([Offer, Product, Category, DiscountCode])],
   controllers: [OffersController],
   providers: [OffersService, OffersRepository],
 })

@@ -14,7 +14,7 @@ export class CreateOfferDto {
         description: 'Fecha de expiración de la oferta',
         example: '2024-12-31',
     })
-    @IsNotEmpty()
+    @IsOptional()
     dueDate: Date;
 
     @ApiProperty({

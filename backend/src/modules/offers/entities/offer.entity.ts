@@ -20,7 +20,7 @@ export class Offer {
     })
     percentage: number
 
-    @Column({ type: 'date', nullable: false })
+    @Column({ type: 'date', nullable: true })
     @ApiProperty({ 
         description: 'Fecha de expiración de la oferta', 
         example: '2024-12-31' 
