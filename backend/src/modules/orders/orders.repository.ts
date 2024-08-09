@@ -19,6 +19,10 @@ export class OrdersRepository {
     private readonly orderDetailRepository: Repository<OrderDetail>,
   ) { }
 
+  async getOrders() {
+    const orders = await this.orderRepository.find({ relations: ['user', 'orderDetails'] });
+    return orders;
+  }
   async createOrderFromCart(cartItems: CartItem[], userId: string) {
     const findUser = await this.usersRepository.getUserById(userId);
     if (!findUser) {
