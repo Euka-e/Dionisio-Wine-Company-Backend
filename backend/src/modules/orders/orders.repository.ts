@@ -1,22 +1,20 @@
-import { UsersRepository } from 'src/modules/users/users.repository';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderDetail } from './entities/orderdetail.entity';
 import { CartItem } from '../cart/entities/cart.item.entity';
-import { Repository, QueryRunner, getConnection } from 'typeorm';
+import { UsersRepository } from '../users/users.repository';
 import { OrderStatus } from './entities/order.status.enum';
-import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class OrdersRepository {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: UsersRepository,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderDetail)
     private readonly orderDetailRepository: Repository<OrderDetail>,
+    private readonly usersRepository: UsersRepository,
   ) { }
 
   async getOrders() {
@@ -27,39 +25,28 @@ export class OrdersRepository {
   async createOrderFromCart(cartItems: CartItem[], userId: string) {
     const findUser = await this.usersRepository.getUserById(userId);
     if (!findUser) {
-      throw new NotFoundException('User not found');
+      throw new Error('User not found');
     }
 
-    const queryRunner = getConnection().createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const order = new Order();
+    order.user = findUser;
+    order.status = OrderStatus.PENDING;
 
-    try {
-      const order = new Order();
-      order.user = findUser;
-      order.status = OrderStatus.PENDING;
+    const savedOrder = await this.orderRepository.save(order);
 
-      const savedOrder = await queryRunner.manager.save(order);
+    const orderDetails = cartItems.map(item => {
+      const orderDetail = new OrderDetail();
+      orderDetail.order = savedOrder;
+      orderDetail.product = item.product;
+      orderDetail.quantity = item.quantity;
+      orderDetail.price = item.price;
+      orderDetail.total = item.quantity * item.price;
+      return orderDetail;
+    });
 
-      const orderDetails = cartItems.map(item => {
-        const orderDetail = new OrderDetail();
-        orderDetail.order = savedOrder;
-        orderDetail.product = item.product;
-        orderDetail.quantity = Number(item.quantity);
-        orderDetail.price = item.price;
-        orderDetail.total = orderDetail.quantity * orderDetail.price;
-        return orderDetail;
-      });
+    await this.orderDetailRepository.save(orderDetails);
 
-      await queryRunner.manager.save(orderDetails);
-      await queryRunner.commitTransaction();
-
-      return savedOrder;
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+    return savedOrder;
   }
 }
+
