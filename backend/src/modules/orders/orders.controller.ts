@@ -30,7 +30,7 @@ export class OrdersController {
     return await this.ordersService.getOrders();
   }
 
-  @Post()
+  @Post('create/:userId')
   @Roles(Role.User)
   @UseGuards(AuthGuard, RolesGuard)
   async create(
