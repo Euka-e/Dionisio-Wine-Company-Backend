@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 import { Offer } from 'src/modules/offers/entities/offer.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'CATEGORIES' })
 export class Category {
@@ -14,5 +15,6 @@ export class Category {
     products: Product[];
 
     @OneToOne(() => Offer, (offer) => offer.category)
-    offer: Offer
+    @ApiProperty({ type: () => Offer, description: 'Oferta asociada a la categoría' })
+    offer?: Offer;
 }
