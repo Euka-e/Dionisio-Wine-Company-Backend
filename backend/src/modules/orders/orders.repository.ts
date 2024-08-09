@@ -20,9 +20,12 @@ export class OrdersRepository {
   ) { }
 
   async createOrderFromCart(cartItems: CartItem[], userId: string) {
-    
     const findUser = await this.usersRepository.getUserById(userId);
-    const order = new Order()
+    if (!findUser) {
+      throw new Error('User not found');
+    }
+
+    const order = new Order();
     order.user = findUser;
     order.status = OrderStatus.PENDING;
 
@@ -34,7 +37,7 @@ export class OrdersRepository {
       orderDetail.product = item.product;
       orderDetail.quantity = item.quantity;
       orderDetail.price = item.price;
-      orderDetail.total = item.total;
+      orderDetail.total = item.quantity * item.price;
       return orderDetail;
     });
 

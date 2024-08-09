@@ -20,8 +20,8 @@ export class CartService {
     return await this.cartRepository.create(id, products);
   }
 
-  async delete(id:string){
-    return await this.cartRepository.removeCart(id);
+  async clearCart(userId:string){
+    return await this.cartRepository.clearCart(userId);
   }
 
   async checkout(id: string) {

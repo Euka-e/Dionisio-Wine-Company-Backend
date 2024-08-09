@@ -143,21 +143,22 @@ export class CartRepository {
     });
   }
 
-  async removeCart(id: string) {
-    const cart = await this.cartRepository.findOne({ where: { cartId: id } });
+  async clearCart(userId: string): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['cart'],
+    });
 
-    if (!cart) {
-      throw new NotFoundException(`Cart with id: ${id} not found`);
+    if (!user || !user.cart) {
+      throw new NotFoundException(`Cart for user with id: ${userId} not found`);
     }
 
     try {
-      if (cart.cartDetail) {
-        await this.cartDetailRepository.remove(cart.cartDetail);
-      }
+      await this.cartDetailRepository.delete({ cart: { cartId: user.cart.cartId } });
 
-      await this.cartRepository.remove(cart);
+      await this.cartRepository.remove(user.cart);
     } catch (error) {
-      throw new InternalServerErrorException('Error deleting cart and details');
+      throw new InternalServerErrorException(`Error deleting cart and details: ${error.message}`);
     }
   }
 

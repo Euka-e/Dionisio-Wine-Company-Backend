@@ -44,11 +44,11 @@ export class CartController {
     return await this.cartService.checkout(id);
   }
 
-  @Delete(':id')
+  /* @Delete(':userId')
   @Roles(Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async deleteCart(@Param('id') id: string){
     return await this.cartService.delete(id);
-  }
+  } */
 
 }

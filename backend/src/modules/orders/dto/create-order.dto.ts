@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsNotEmpty, IsUUID } from "class-validator";
+import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsUUID } from "class-validator";
 import { Product } from "src/modules/products/entities/product.entity";
 
 export class CreateOrderDto {
@@ -7,7 +7,7 @@ export class CreateOrderDto {
    */
   @IsNotEmpty()
   @IsUUID()
-  id: string;
+  userId: string;
 
   /**
    * @example 
@@ -23,4 +23,8 @@ export class CreateOrderDto {
   @IsArray()
   @ArrayMinSize(1)
   products: Partial<Product[]>;
+
+  @IsNumber()
+  @IsNotEmpty()
+  price:number
 }
