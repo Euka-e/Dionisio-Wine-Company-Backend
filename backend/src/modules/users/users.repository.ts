@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -10,6 +11,7 @@ import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing/mailing.service';
+import { Role } from './dto/roles.enum';
 
 @Injectable()
 export class UsersRepository {
@@ -162,5 +164,26 @@ export class UsersRepository {
         `No se pudo eliminar el usuario con el id ${id}.`,
       );
     }
+  }
+
+  async updateUserRole(userId: string, newRole: Role, currentUser: any) {
+    if (currentUser.role === Role.SuperAdmin) {
+      if (newRole === Role.SuperAdmin) {
+        throw new ForbiddenException(
+          'SuperAdmin cannot assign SuperAdmin role',
+        );
+      }
+    } else if (currentUser.role === Role.Admin) {
+      if (![Role.User, Role.Banned].includes(newRole)) {
+        throw new ForbiddenException(
+          'Admin can only assign User or Banned roles',
+        );
+      }
+    } else {
+      throw new ForbiddenException('Unauthorized');
+    }
+
+    await this.updateUser(userId, { role: newRole });
+    return await this.usersRepository.findOne({ where: { id: userId } });
   }
 }

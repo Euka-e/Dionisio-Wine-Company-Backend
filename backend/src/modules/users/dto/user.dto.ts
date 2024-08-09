@@ -52,11 +52,11 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Id de usuario de google y auth0',
-    example: 'google-oauth2|1234567890'
+    example: 'google-oauth2|1234567890',
   })
   @IsOptional()
   @IsString()
-  authId?: string
+  authId?: string;
 
   @ApiProperty({
     description:
@@ -134,22 +134,21 @@ export class CreateUserDto {
 
   @ApiHideProperty()
   @IsEmpty() //! Si quitamos esta propiedad y la de arriba, podemos hacer un patch para cambiar el rol de un usuario
-  /* @IsEnum(Role) */ //? Si agregamos esta propiedad, podemos hacer un patch para cambiar el rol de un usuario
+  /*@IsEnum(Role)*/ //? Si agregamos esta propiedad, podemos hacer un patch para cambiar el rol de un usuario
   role?: Role;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) { }
+export class UpdateUserDto extends PartialType(CreateUserDto) {}
 
 export class LoginUserDto extends PickType(CreateUserDto, [
   'email',
   'password',
-]) { }
+]) {}
 
 export class Auth0Dto {
-
   @ApiProperty({
     description: 'Id de usuario de google y auth0',
-    example: 'google-oauth2|1234567890'
+    example: 'google-oauth2|1234567890',
   })
   @IsOptional()
   @IsString()
@@ -159,7 +158,7 @@ export class Auth0Dto {
     description: 'Nombre del usuario',
     minLength: 3,
     maxLength: 80,
-    example: 'Juan Pérez'
+    example: 'Juan Pérez',
   })
   @IsString()
   @Length(3, 80)
@@ -167,10 +166,9 @@ export class Auth0Dto {
 
   @ApiProperty({
     description: 'Correo electrónico del usuario',
-    example: 'juan.perez@example.com'
+    example: 'juan.perez@example.com',
   })
   @IsNotEmpty()
   @IsEmail()
   email: string;
-
 }
