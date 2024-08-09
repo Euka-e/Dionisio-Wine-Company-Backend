@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CartItem } from '../cart/entities/cart.item.entity';
 import { OrdersRepository } from './orders.repository';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -10,7 +10,7 @@ export class OrdersService {
     return await this.ordersRepository.getOrders();
   }
 
-  async createOrderFromCart(cartItems: CartItem[], userId: string) {
+  async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
     return await this.ordersRepository.createOrderFromCart(cartItems, userId);
   }
 }

@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDat
 import { User } from '../../users/entities/user.entity';
 import { OrderDetail } from './orderdetail.entity';
 import { OrderStatus } from './order.status.enum';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 @Entity('orders')
 export class Order {
@@ -13,6 +14,10 @@ export class Order {
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order, { cascade: true })
   details: OrderDetail[];
+
+  @IsNumber()
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  price: number;
 
   @Column({
     type: 'enum',

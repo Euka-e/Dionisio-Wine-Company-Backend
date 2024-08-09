@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderDetail } from './entities/orderdetail.entity';
-import { CartItem } from '../cart/entities/cart.item.entity';
 import { UsersRepository } from '../users/users.repository';
 import { OrderStatus } from './entities/order.status.enum';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class OrdersRepository {
@@ -14,6 +15,8 @@ export class OrdersRepository {
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderDetail)
     private readonly orderDetailRepository: Repository<OrderDetail>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
     private readonly usersRepository: UsersRepository,
   ) { }
 
@@ -22,31 +25,38 @@ export class OrdersRepository {
     return orders;
   }
 
-  async createOrderFromCart(cartItems: CartItem[], userId: string) {
-    const findUser = await this.usersRepository.getUserById(userId);
-    if (!findUser) {
-      throw new Error('User not found');
+  async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
+    try {
+      const findUser = await this.usersRepository.getUserById(userId);
+      if (!findUser) {
+        throw new Error('User not found');
+      }
+
+      const order = new Order();
+      order.user = findUser;
+      order.status = OrderStatus.PENDING;
+      order.price = cartItems.price;
+
+      const savedOrder = await this.orderRepository.save(order);
+
+      const orderDetails = await Promise.all(cartItems.cartItems.map(async (item) => {
+        const orderDetail = new OrderDetail();
+        orderDetail.order = savedOrder;
+        const findProduct = await this.productRepository.findOneBy({ productId: item.productId });
+        orderDetail.product = findProduct;
+        orderDetail.quantity = item.quantity;
+        orderDetail.price = item.price;
+        orderDetail.total = item.quantity * item.price;
+        return orderDetail;
+      }));
+
+      await this.orderDetailRepository.save(orderDetails);
+
+      return savedOrder;
+    } catch (error) {
+      console.log(error.mesagge)
+      throw new BadRequestException('Error creating order');
     }
-
-    const order = new Order();
-    order.user = findUser;
-    order.status = OrderStatus.PENDING;
-
-    const savedOrder = await this.orderRepository.save(order);
-
-    const orderDetails = cartItems.map(item => {
-      const orderDetail = new OrderDetail();
-      orderDetail.order = savedOrder;
-      orderDetail.product = item.product;
-      orderDetail.quantity = item.quantity;
-      orderDetail.price = item.price;
-      orderDetail.total = item.quantity * item.price;
-      return orderDetail;
-    });
-
-    await this.orderDetailRepository.save(orderDetails);
-
-    return savedOrder;
   }
 }
 
