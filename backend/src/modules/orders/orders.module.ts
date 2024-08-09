@@ -13,13 +13,14 @@ import { CartItem } from '../cart/entities/cart.item.entity';
 import { CartService } from '../cart/cart.service';
 import { CartRepository } from '../cart/cart.repository';
 import { UsersRepository } from '../users/users.repository';
+import { MailingService } from '../mailing/mailing.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, OrderDetail, User, Product,Cart,CartDetail, Cart, CartItem, CartDetail]),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository,CartService,CartRepository, UsersRepository],
+  providers: [OrdersService, OrdersRepository,CartService,CartRepository, UsersRepository,MailingService],
   exports: [OrdersRepository],
 })
 export class OrdersModule {}
