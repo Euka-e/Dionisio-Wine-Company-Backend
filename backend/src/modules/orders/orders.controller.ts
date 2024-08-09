@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Get,
+  NotFoundException,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -26,7 +27,7 @@ export class OrdersController {
   @Get('/orders')
   @Roles(Role.User)
   @UseGuards(AuthGuard, RolesGuard)
-  async getOrders(){
+  async getOrders() {
     return await this.ordersService.getOrders();
   }
 
@@ -40,8 +41,9 @@ export class OrdersController {
     const order = await this.ordersService.createOrderFromCart(cartItems, userId);
     if (order) {
       await this.cartService.clearCart(userId);
+    } else {
+      throw new NotFoundException('Order creation failed');
     }
     return order;
   }
-
 }
