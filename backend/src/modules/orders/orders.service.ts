@@ -8,6 +8,9 @@ export class OrdersService {
   constructor(
     private readonly ordersRepository: OrdersRepository) { }
 
+  async getOrders() {
+    return await this.ordersRepository.getOrders();
+    }
   async createOrderFromCart(cartItems: CartItem[], userId: string) {
     return await this.ordersRepository.createOrderFromCart(cartItems, userId);
   }

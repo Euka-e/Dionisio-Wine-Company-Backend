@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -22,6 +23,12 @@ export class OrdersController {
     private readonly cartService: CartService
   ) { }
 
+  @Get('/orders')
+  @Roles(Role.User)
+  @UseGuards(AuthGuard, RolesGuard)
+  async getOrders(){
+    return await this.ordersService.getOrders();
+  }
 
   @Post()
   @Roles(Role.User)
