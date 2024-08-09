@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CartItem } from '../cart/entities/cart.item.entity';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from '../users/dto/roles.enum';
 import { AuthGuard } from '../auth/guards/authorization.guard';
 import { RolesGuard } from '../auth/guards/role.guard';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('orders')
 @ApiTags('Orders')
@@ -36,7 +36,7 @@ export class OrdersController {
   @UseGuards(AuthGuard, RolesGuard)
   async create(
     @Param('userId') userId: string,
-    @Body() cartItems: CartItem[]
+    @Body() cartItems: CreateOrderDto
   ) {
     const order = await this.ordersService.createOrderFromCart(cartItems, userId);
     if (order) {
