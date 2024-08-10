@@ -9,6 +9,8 @@ import {
   Get,
   NotFoundException,
   BadRequestException,
+  ParseUUIDPipe,
+  Delete,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -23,6 +25,11 @@ export class OrdersController {
   @Get()
   async getOrders() {
     return await this.ordersService.getOrders();
+  }
+
+  @Get(':id')
+  async getOrdersByUserId(@Param('userId') userId: string) {
+    return await this.ordersService.getOrdersByUserId(userId);
   }
 
   @Post('create/:userId')
@@ -41,4 +48,10 @@ export class OrdersController {
       throw new BadRequestException('Error creating order');
     }
   }
+  
+  @Delete('remove/:userId')
+  async deleteOrdersFromUser(@Param('userId') userId: string) {
+    return await this.ordersService.deleteOrdersFromUser(userId);
+  }
+
 }

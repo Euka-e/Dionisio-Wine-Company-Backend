@@ -37,7 +37,7 @@ export class User {
     description: 'Email address of the user',
     example: 'john.doe@example.com',
   })
-  @Column({ length: 50, nullable: false })
+  @Column({ length: 50, nullable: false, unique:true })
   email: string;
 
   @ApiProperty({

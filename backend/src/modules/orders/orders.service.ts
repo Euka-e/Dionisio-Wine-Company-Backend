@@ -10,7 +10,16 @@ export class OrdersService {
     return await this.ordersRepository.getOrders();
   }
 
+  async getOrdersByUserId(userId:string){
+    return await this.ordersRepository.getOrdersByUserId(userId);
+  }
+
   async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
     return await this.ordersRepository.createOrderFromCart(cartItems, userId);
   }
+
+  async deleteOrdersFromUser(userId: string) {
+    return await this.ordersRepository.deleteOrdersFromUser(userId);
+  }
+
 }
