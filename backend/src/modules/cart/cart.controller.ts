@@ -30,10 +30,10 @@ export class CartController {
   @Roles(Role.User)
   @UseGuards(AuthGuard, RolesGuard)
   async addItem(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Body() products: { productId: string, quantity: number }[],
   ) {
-    return this.cartService.create(id, products);
+    return this.cartService.updateCart(userId, products);
   }
 
   @Post(':id/checkout')

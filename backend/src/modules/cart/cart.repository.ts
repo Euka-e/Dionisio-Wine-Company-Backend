@@ -25,7 +25,7 @@ export class CartRepository {
             product: true
           }
         },
-        user:true
+        user: true
       }
     });
   }
@@ -38,16 +38,14 @@ export class CartRepository {
     return cart;
   }
 
-  async create(id: string, products: { productId: string, quantity: number }[]): Promise<Cart> {
+  async updateCart(userId: string, products: { productId: string, quantity: number }[]) {
     let total = 0;
 
-    // Verificar si el usuario existe
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) throw new NotFoundException(`User with id: ${id} not found`);
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) throw new NotFoundException(`User with id: ${userId} not found`);
 
-    // Obtener o crear el carrito para el usuario
     let cart = await this.cartRepository.findOne({
-      where: { user: { id } },
+      where: { user: { id: userId } },
       relations: { cartDetail: { items: true } },
     });
 
@@ -57,13 +55,11 @@ export class CartRepository {
       cart = await this.cartRepository.save(cart);
     }
 
-    // Obtener el detalle del carrito existente
     const existingCartDetail = await this.cartDetailRepository.findOne({
       where: { cart: { cartId: cart.cartId } },
       relations: { items: { product: true } },
     });
 
-    // Crear un mapa para los ítems existentes en el carrito
     const existingItemsMap = new Map<string, CartItem>();
     if (existingCartDetail) {
       existingCartDetail.items.forEach(item => {
@@ -71,117 +67,105 @@ export class CartRepository {
       });
     }
 
-    // Procesar los productos y calcular el total
     const updatedCartItems = await Promise.all(
       products.map(async ({ productId, quantity }) => {
-        if (quantity == null || quantity <= 0) {
-          throw new BadRequestException('Quantity must be a positive number');
+        if (quantity == null) {
+          throw new BadRequestException('Quantity must be provided');
         }
 
-        // Verificar si el producto existe
         const product = await this.productsRepository.findOneBy({ productId });
         if (!product) throw new NotFoundException(`Product with Id ${productId} not found`);
 
-        // Verificar si hay suficiente stock
-        if (product.stock < quantity) {
-          throw new BadRequestException(`Insufficient stock for product with Id ${productId}`);
+        if (quantity > 0) {
+          if (product.stock < quantity) {
+            throw new BadRequestException(`Insufficient stock for product with Id ${productId}`);
+          }
+
+          const itemTotal = Number(product.price) * quantity;
+          total += itemTotal;
+
+          await this.productsRepository.update(
+            { productId },
+            { stock: product.stock - quantity },
+          );
+
+          let cartItem = existingItemsMap.get(productId);
+          if (cartItem) {
+            cartItem.quantity += quantity;
+            cartItem.total = cartItem.quantity * cartItem.price;
+          } else {
+            cartItem = new CartItem();
+            cartItem.product = product;
+            cartItem.quantity = quantity;
+            cartItem.price = product.price;
+            cartItem.total = itemTotal;
+          }
+          return cartItem;
+        } else if (quantity === 0) {
+          let cartItem = existingItemsMap.get(productId);
+          if (cartItem) {
+            await this.productsRepository.update(
+              { productId },
+              { stock: product.stock + cartItem.quantity },
+            );
+            existingItemsMap.delete(productId);
+          }
+          return null;
         }
-
-        const itemTotal = Number(product.price) * quantity;
-        total += itemTotal;
-
-        // Actualizar el stock del producto
-        await this.productsRepository.update(
-          { productId },
-          { stock: product.stock - quantity },
-        );
-
-        // Crear o actualizar el ítem del carrito
-        let cartItem = existingItemsMap.get(productId);
-        if (cartItem) {
-          // Actualizar la cantidad y el total del ítem existente
-          cartItem.quantity += quantity;
-          cartItem.total = cartItem.quantity * cartItem.price;
-        } else {
-          // Crear nuevo ítem del carrito
-          cartItem = new CartItem();
-          cartItem.product = product;
-          cartItem.quantity = quantity;
-          cartItem.price = product.price;
-          cartItem.total = itemTotal;
-        }
-        return cartItem;
       }),
     );
 
     if (updatedCartItems.length === 0) {
-      throw new BadRequestException('No valid products to add to cart');
+      throw new BadRequestException('No valid products to update in cart');
     }
 
-    // Si el carrito tiene detalles existentes, actualizarlos
     if (existingCartDetail) {
-      // Mantener los ítems existentes y actualizar los nuevos ítems
       const allItems = new Map<string, CartItem>(existingItemsMap);
-      updatedCartItems.forEach(item => {
+      updatedCartItems.filter(item => item !== null).forEach(item => {
         allItems.set(item.product.productId, item);
       });
       existingCartDetail.items = Array.from(allItems.values());
       existingCartDetail.total = Number(total.toFixed(2));
       await this.cartDetailRepository.save(existingCartDetail);
     } else {
-      // Crear nuevo detalle del carrito
       const cartDetail = new CartDetail();
-      cartDetail.items = updatedCartItems;
+      cartDetail.items = updatedCartItems.filter(item => item !== null);
       cartDetail.cart = cart;
       cartDetail.total = Number(total.toFixed(2));
       await this.cartDetailRepository.save(cartDetail);
     }
 
-    // Recuperar y devolver el carrito actualizado
     return await this.cartRepository.findOne({
       where: { cartId: cart.cartId },
       relations: { cartDetail: { items: { product: true } } },
     });
   }
 
-  async clearCart(userId: string){
+  async clearCart(userId: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['cart'],
     });
-
     if (!user.cart) {
       throw new NotFoundException(`Cart for user with id: ${userId} not found`);
     }
-
     try {
+      const cartDetail = await this.cartDetailRepository.findOne({
+        where: { cart: { cartId: user.cart.cartId } },
+        relations: { items: { product: true } },
+      });
+
+      if (cartDetail) {
+        for (const item of cartDetail.items) {
+          await this.productsRepository.update(
+            { productId: item.product.productId },
+            { stock: item.product.stock + item.quantity }
+          );
+        }
+      }
       await this.cartRepository.remove(user.cart);
     } catch (error) {
       throw new InternalServerErrorException(`Error deleting cart and details: ${error.message}`);
     }
   }
-
-  /* async checkout(userId: string): Promise<void> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['cart', 'cart.items', 'cart.items.product'],
-    });
-
-    if (!user || !user.cart) {
-      throw new Error('Cart not found');
-    }
-
-    const cart = user.cart;
-
-    const products = cart.items.map((item) => ({
-      id: item.productId,
-      quantity: item.quantity,
-    }));
-
-    await this.orderRepository.create(userId, products);
-
-    cart.cartDetails = CartDetails[];
-    cart.total = 0;
-    await this.cartRepository.save(cart);
-  } */
 }
