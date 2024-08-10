@@ -57,7 +57,7 @@ export class OrdersRepository {
 
       return savedOrder;
     } catch (error) {
-      console.log(error.mesagge)
+      console.log(error.message)
       throw new BadRequestException('Error creating order');
     }
   }
