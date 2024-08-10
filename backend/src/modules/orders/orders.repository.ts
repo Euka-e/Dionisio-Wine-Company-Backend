@@ -7,6 +7,7 @@ import { UsersRepository } from '../users/users.repository';
 import { OrderStatus } from './entities/order.status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Product } from '../products/entities/product.entity';
+import { CartRepository } from '../cart/cart.repository';
 
 @Injectable()
 export class OrdersRepository {
@@ -18,6 +19,7 @@ export class OrdersRepository {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly usersRepository: UsersRepository,
+    private readonly cartRepository: CartRepository,
   ) { }
 
   async getOrders() {
@@ -51,6 +53,7 @@ export class OrdersRepository {
       }));
 
       await this.orderDetailRepository.save(orderDetails);
+      await this.cartRepository.clearCart(userId);
 
       return savedOrder;
     } catch (error) {

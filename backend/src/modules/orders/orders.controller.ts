@@ -1,3 +1,4 @@
+import { UsersRepository } from 'src/modules/users/users.repository';
 import { CartService } from './../cart/cart.service';
 import {
   Controller,
@@ -21,7 +22,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 export class OrdersController {
   constructor(
     private readonly ordersService: OrdersService,
-    private readonly cartService: CartService
+    private readonly usersRepository: UsersRepository
   ) { }
 
   @Get('/orders')
@@ -38,12 +39,12 @@ export class OrdersController {
     @Param('userId') userId: string,
     @Body() cartItems: CreateOrderDto
   ) {
-    const order = await this.ordersService.createOrderFromCart(cartItems, userId);
-    if (order) {
-      await this.cartService.clearCart(userId);
+    const findUser = await this.usersRepository.getUserById(userId);
+    if (findUser) {
+      const order = await this.ordersService.createOrderFromCart(cartItems, userId);
+      return order;
     } else {
       throw new NotFoundException('Order creation failed');
     }
-    return order;
   }
 }

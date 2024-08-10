@@ -12,7 +12,6 @@ import { typeOrmConfig } from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { CartModule } from './modules/cart/cart.module';
-import { PaymentModule } from './modules/payment/payment.module';
 import { MailingModule } from './modules/mailing/mailing.module';
 
 @Module({
@@ -44,10 +43,9 @@ import { MailingModule } from './modules/mailing/mailing.module';
       envFilePath: '.env.development',
     }),
     AuthModule,
-    PaymentModule,
     AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
