@@ -53,7 +53,7 @@ export class OrdersRepository {
       }));
 
       await this.orderDetailRepository.save(orderDetails);
-      await this.cartRepository.clearCart(userId);
+      /* await this.cartRepository.clearCart(userId); */
 
       return savedOrder;
     } catch (error) {
