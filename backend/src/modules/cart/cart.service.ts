@@ -16,8 +16,8 @@ export class CartService {
     return cart;
   }
 
-  async create(id: string, products: { productId: string, quantity: number }[]) {
-    return await this.cartRepository.create(id, products);
+  async updateCart(userId: string, products: { productId: string, quantity: number }[]) {
+    return await this.cartRepository.updateCart(userId, products);
   }
 
   async clearCart(userId:string){
