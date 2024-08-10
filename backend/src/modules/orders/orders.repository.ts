@@ -26,10 +26,25 @@ export class OrdersRepository {
     const orders = await this.orderRepository.find({ relations: ['user', 'details'] });
     return orders;
   }
-  
-  async getOrdersByUserId(userId:string){
-    const orders = await this.orderRepository.find({ where: { user: { id: userId } }, relations: ['user', 'details'] });
-    return orders;
+
+  async getOrdersByUserId(userId: string) {
+    const orders = await this.orderRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'details', 'details.product']
+    });
+    const sanitizedOrders = orders.map(order => {
+      const sanitizedUser = { ...order.user }; //? Aquí vamos a poner los campos del usuario que no queremos obtener
+      delete sanitizedUser.password;
+      delete sanitizedUser.role;
+      delete sanitizedUser.authId;
+      delete sanitizedUser.id;
+      delete sanitizedUser.country;
+      delete sanitizedUser.address;
+      delete sanitizedUser.city;
+      delete sanitizedUser.date;
+      return { ...order, user: sanitizedUser };
+    });
+    return sanitizedOrders;
   }
 
   async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
