@@ -20,6 +20,11 @@ export class OrdersController {
     private readonly usersRepository: UsersRepository
   ) { }
 
+  @Get()
+  async getOrders() {
+    return await this.ordersService.getOrders();
+  }
+
   @Post('create/:userId')
   async create(
     @Param('userId') userId: string,
