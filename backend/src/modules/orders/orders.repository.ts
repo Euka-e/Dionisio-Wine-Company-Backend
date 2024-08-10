@@ -26,6 +26,11 @@ export class OrdersRepository {
     const orders = await this.orderRepository.find({ relations: ['user', 'details'] });
     return orders;
   }
+  
+  async getOrdersByUserId(userId:string){
+    const orders = await this.orderRepository.find({ where: { user: { id: userId } }, relations: ['user', 'details'] });
+    return orders;
+  }
 
   async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
     try {
@@ -61,5 +66,10 @@ export class OrdersRepository {
       throw new BadRequestException('Error creating order');
     }
   }
+
+  async deleteOrdersFromUser(userId: string) {
+    return await this.orderRepository.delete({ user: { id: userId } });
+  }
+
 }
 
