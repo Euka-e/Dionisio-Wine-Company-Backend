@@ -24,11 +24,11 @@ import { CurrentUser } from 'src/decorators/currentUser.decorator';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async getUsers(@Query('page') page: string, @Query('limit') limit: string) {
     !page ? (page = '1') : page;
@@ -39,7 +39,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.User)
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserById(id);
@@ -49,7 +49,7 @@ export class UsersController {
   //! habria que partirlo en distintos endpoints para mas control
   @ApiBearerAuth()
   @Patch(':id')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async updateUser(
     @Param('id', ParseUUIDPipe) id: string,
@@ -62,11 +62,11 @@ export class UsersController {
   //! tambien verifica que no se pueda dar "superAdmin" y que los Admins no puedan dar "Admin"
   @Patch(':id/role')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   async updateUserRole(
     @Param('id', ParseUUIDPipe) userId: string,
     @Body('role') newRole: Role,
-    @CurrentUser() currentUser: any, // Aquí usas el decorador
+    @CurrentUser() currentUser: any,
   ) {
     return this.usersService.updateUserRole(userId, newRole, currentUser);
   }

@@ -84,11 +84,6 @@ export class CartRepository {
           const itemTotal = Number(product.price) * quantity;
           total += itemTotal;
 
-          await this.productsRepository.update(
-            { productId },
-            { stock: product.stock - quantity },
-          );
-
           let cartItem = existingItemsMap.get(productId);
           if (cartItem) {
             cartItem.quantity += quantity;
@@ -104,10 +99,6 @@ export class CartRepository {
         } else if (quantity === 0) {
           let cartItem = existingItemsMap.get(productId);
           if (cartItem) {
-            await this.productsRepository.update(
-              { productId },
-              { stock: product.stock + cartItem.quantity },
-            );
             existingItemsMap.delete(productId);
           }
           return null;

@@ -38,14 +38,14 @@ export class CategoriesController {
   }
 
   @Post()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id', ParseUUIDPipe) category_id: string) {
     return this.categoriesService.remove(category_id);

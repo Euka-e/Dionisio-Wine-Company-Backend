@@ -14,6 +14,10 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { AuthGuard } from '../auth/guards/authorization.guard';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { Role } from '../users/dto/roles.enum';
 
 @Controller('orders')
 export class OrdersController {
@@ -22,17 +26,23 @@ export class OrdersController {
     private readonly usersRepository: UsersRepository
   ) { }
 
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Get()
   async getOrders() {
     return await this.ordersService.getOrders();
   }
 
   @Get(':id')
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
   async getOrdersByUserId(@Param('userId') userId: string) {
     return await this.ordersService.getOrdersByUserId(userId);
   }
 
   @Post('create/:userId')
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
   async create(
     @Param('userId') userId: string,
     @Body() createOrderDto: CreateOrderDto
@@ -48,7 +58,9 @@ export class OrdersController {
       throw new BadRequestException('Error creating order');
     }
   }
-  
+
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete('remove/:userId')
   async deleteOrdersFromUser(@Param('userId') userId: string) {
     return await this.ordersService.deleteOrdersFromUser(userId);
