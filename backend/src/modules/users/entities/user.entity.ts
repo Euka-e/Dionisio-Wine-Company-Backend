@@ -1,9 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, Matches } from "class-validator";
-import { Cart } from "src/modules/cart/entities/cart.entity";
-import { Order } from "src/modules/orders/entities/order.entity";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from "typeorm";
-import { Role } from "../dto/roles.enum";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
+import { Cart } from 'src/modules/cart/entities/cart.entity';
+import { Order } from 'src/modules/orders/entities/order.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Role } from '../dto/roles.enum';
 
 @Entity({ name: 'USERS' })
 export class User {
@@ -67,10 +74,17 @@ export class User {
     description: 'City of the user',
     example: 'New York',
   })
-  @Column({ length: 50, default: 'Default City' })
+  @Column({ length: 50, default: ' ' })
   city: string;
 
-  @Column({ nullable: true, type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ length: 30, default: ' ' })
+  phone?: string;
+
+  @Column({
+    nullable: true,
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   date?: Date;
 
   @ApiProperty({
@@ -81,14 +95,14 @@ export class User {
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role?: Role;
 
-  @OneToOne(() => Cart, cart => cart.user)
+  @OneToOne(() => Cart, (cart) => cart.user)
   @JoinColumn()
   cart?: Cart;
 
   @ApiProperty({
     description: 'List of orders associated with the user',
-    type: () => [Order]
+    type: () => [Order],
   })
-  @OneToMany(() => Order, order => order.user)
+  @OneToMany(() => Order, (order) => order.user)
   orders?: Order[];
 }

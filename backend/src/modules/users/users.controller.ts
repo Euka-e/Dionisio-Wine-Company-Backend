@@ -13,7 +13,11 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/user.dto';
+import {
+  updateUserAdminInfoDto,
+  UpdateUserDto,
+  UpdateUserPersonalInfoDto,
+} from './dto/user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from './dto/roles.enum';
 import { AuthGuard } from '../auth/guards/authorization.guard';
@@ -41,8 +45,8 @@ export class UsersController {
   @Get(':id')
   @Roles(Role.User, Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
-  async getUserById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.getUserById(id);
+  async getUserById(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.usersService.getUserById(userId);
   }
 
   //! ESTE ENDPOINT ACTUALIZA TODOS LOS DATOS DE USER
@@ -51,16 +55,37 @@ export class UsersController {
   @Patch(':id')
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
-  async updateUser(
-    @Param('id', ParseUUIDPipe) id: string,
+  async updateFullUser(
+    @Param('id', ParseUUIDPipe) userId: string,
     @Body() user: UpdateUserDto,
   ) {
-    return this.usersService.updateUser(id, user);
+    return this.usersService.updateFullUser(userId, user);
   }
 
-  //! ESTE ENDPOINT ACTUALIZA LOS ROLES DE USER
-  //! tambien verifica que no se pueda dar "superAdmin" y que los Admins no puedan dar "Admin"
-  @Patch(':id/role')
+  //! ESTE ENDPOINT SE PUEDE ABREVIAR A UpdateUserInfo
+  @ApiBearerAuth()
+  @Patch('info/:id')
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
+  async updateUserPersonalInfo(
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body() user: UpdateUserPersonalInfoDto,
+  ) {
+    return this.usersService.updateUserPersonalInfo(userId, user);
+  }
+
+  @ApiBearerAuth()
+  @Patch('admin-info/:id')
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
+  async updateUserAdminInfo(
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body() user: updateUserAdminInfoDto,
+  ) {
+    return this.usersService.updateUserPersonalInfo(userId, user);
+  }
+
+  @Patch('role/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   async updateUserRole(
@@ -74,7 +99,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.SuperAdmin)
-  async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.deleteUser(id);
+  async deleteUser(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.usersService.deleteUser(userId);
   }
 }
