@@ -7,7 +7,13 @@ import {
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Auth0Dto, CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import {
+  Auth0Dto,
+  CreateUserDto,
+  updateUserAdminInfoDto,
+  UpdateUserDto,
+  UpdateUserPersonalInfoDto,
+} from './dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing/mailing.service';
@@ -42,22 +48,22 @@ export class UsersRepository {
     }
   }
 
-  async getUserById(id: string) {
+  async getUserById(userId: string) {
     try {
       const user = await this.usersRepository.findOne({
-        where: { id },
+        where: { id: userId },
         relations: { orders: true },
       });
       if (!user) {
         throw new NotFoundException(
-          `No se encontró el usuario con el id ${id}`,
+          `No se encontró el usuario con el id ${userId}`,
         );
       }
       return user;
     } catch (error) {
-      console.error(`Error obteniendo el usuario con el id ${id}:`, error);
+      console.error(`Error obteniendo el usuario con el id ${userId}:`, error);
       throw new InternalServerErrorException(
-        `No se pudo obtener el usuario con id ${id}.`,
+        `No se pudo obtener el usuario con id ${userId}.`,
       );
     }
   }
@@ -128,45 +134,52 @@ export class UsersRepository {
     }
   }
 
-  async updateUser(id: string, user: Partial<UpdateUserDto>) {
+  async updateFullUser(userId: string, user: Partial<UpdateUserDto>) {
     try {
-      await this.usersRepository.update(id, user);
-      const updatedUser = await this.usersRepository.findOneBy({ id });
+      await this.usersRepository.update(userId, user);
+      const updatedUser = await this.usersRepository.findOneBy({ id: userId });
       if (!updatedUser) {
         throw new NotFoundException(
-          `No se encontró el usuario con el id ${id}`,
+          `No se encontró el usuario con el id ${userId}`,
         );
       }
       const { password, role, ...finalUser } = updatedUser;
-      return finalUser;
+      return finalUser; //? mostrar si password ok, pero sin role porque?
     } catch (error) {
-      console.error(`Error actualizando el usuario con el id ${id}:`, error);
+      console.error(
+        `Error actualizando el usuario con el id ${userId}:`,
+        error,
+      );
       throw new InternalServerErrorException(
-        `No se pudo actualizar el usuario con el id ${id}.`,
+        `No se pudo actualizar el usuario con el id ${userId}.`,
       );
     }
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(userId: string) {
     try {
-      const user = await this.usersRepository.findOneBy({ id });
+      const user = await this.usersRepository.findOneBy({ id: userId });
       if (!user) {
         throw new NotFoundException(
-          `No se encontró el usuario con el id ${id}`,
+          `No se encontró el usuario con el id ${userId}`,
         );
       }
       await this.usersRepository.remove(user);
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } catch (error) {
-      console.error(`Error eliminando el usuario con el id ${id}:`, error);
+      console.error(`Error eliminando el usuario con el id ${userId}:`, error);
       throw new InternalServerErrorException(
-        `No se pudo eliminar el usuario con el id ${id}.`,
+        `No se pudo eliminar el usuario con el id ${userId}.`,
       );
     }
   }
 
   async updateUserRole(userId: string, newRole: Role, currentUser: any) {
+    if (userId === currentUser.id) {
+      throw new ForbiddenException('You cannot change your own role.');
+    }
+
     if (currentUser.role === Role.SuperAdmin) {
       if (newRole === Role.SuperAdmin) {
         throw new ForbiddenException(
@@ -182,8 +195,24 @@ export class UsersRepository {
     } else {
       throw new ForbiddenException('Unauthorized');
     }
+    //? esto se puede optimizar para que lo maneje por su cuenta en vez de usar el otro endpoint.
+    //? Que lo maneje directamente el .update de TypeOrm
+    await this.updateFullUser(userId, { role: newRole });
+    const updatedUser = await this.usersRepository.findOneBy({ id: userId });
+    const { password, ...finalUser } = updatedUser;
+    return finalUser;
+  }
 
-    await this.updateUser(userId, { role: newRole });
-    return await this.usersRepository.findOne({ where: { id: userId } });
+  async updateUserPersonalInfo(
+    userId: string,
+    user: UpdateUserPersonalInfoDto,
+  ) {
+    await this.usersRepository.update(userId, user);
+    return user;
+  }
+
+  async updateUserAdminInfo(userId: string, user: updateUserAdminInfoDto) {
+    await this.usersRepository.update(userId, user);
+    return user;
   }
 }
