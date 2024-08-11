@@ -14,13 +14,34 @@ import { CartService } from '../cart/cart.service';
 import { CartRepository } from '../cart/cart.repository';
 import { UsersRepository } from '../users/users.repository';
 import { MailingService } from '../mailing/mailing.service';
+import { conectionSource } from '../../config/typeorm';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderDetail, User, Product,Cart,CartDetail, Cart, CartItem, CartDetail]),
+    TypeOrmModule.forRoot(conectionSource.options),
+    TypeOrmModule.forFeature([
+      Order,
+      OrderDetail,
+      User,
+      Product,
+      Cart,
+      CartDetail,
+      Cart,
+      CartItem,
+      CartDetail
+    ]),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository,CartService,CartRepository, UsersRepository,MailingService],
+  providers: [
+    OrdersService,
+    OrdersRepository,
+    CartService,
+    CartRepository,
+    UsersRepository,
+    MailingService,
+    { provide: DataSource, useValue: conectionSource }
+  ],
   exports: [OrdersRepository],
 })
-export class OrdersModule {}
+export class OrdersModule { }

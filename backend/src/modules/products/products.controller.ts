@@ -40,14 +40,14 @@ export class ProductsController {
     return this.productsService.findOne(product_id);
   }
   @Post()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   create(@Body() product: CreateProductDto) {
     return this.productsService.create(product);
   }
 
   @Patch(':productId/update')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   update(
     @Param('productId', ParseUUIDPipe) product_id: string,
@@ -57,7 +57,7 @@ export class ProductsController {
   }
 
   @Post(':productId/updateStock')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   restock(
     @Param('productId', ParseUUIDPipe) product_id: string,
@@ -67,7 +67,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('productId', ParseUUIDPipe) product_id: string) {
     return this.productsService.remove(product_id);

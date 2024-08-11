@@ -25,15 +25,16 @@ import { ApplyDiscountCodeDto } from './dto/applyCode.dto';
 export class OffersController {
   constructor(
     private readonly offersService: OffersService,
-  ) {}
+  ) { }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   @Post('generate')
   generateCode(@Body() dto: GenerateDiscountCodeDto) {
     return this.offersService.generateCode(dto);
   }
 
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
   @Post('apply')
   applyCode(@Body() dto: ApplyDiscountCodeDto) {
     return this.offersService.applyCode(dto);
