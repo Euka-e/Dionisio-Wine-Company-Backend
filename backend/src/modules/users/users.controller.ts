@@ -32,7 +32,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async getUsers(@Query('page') page: string, @Query('limit') limit: string) {
     !page ? (page = '1') : page;
@@ -43,7 +43,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.User)
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async getUserById(@Param('id', ParseUUIDPipe) userId: string) {
     return this.usersService.getUserById(userId);
@@ -53,7 +53,7 @@ export class UsersController {
   //! habria que partirlo en distintos endpoints para mas control
   @ApiBearerAuth()
   @Patch(':id')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async updateFullUser(
     @Param('id', ParseUUIDPipe) userId: string,
@@ -65,7 +65,7 @@ export class UsersController {
   //! ESTE ENDPOINT SE PUEDE ABREVIAR A UpdateUserInfo
   @ApiBearerAuth()
   @Patch('info/:id')
-  @Roles(Role.User)
+  @Roles(Role.User, Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async updateUserPersonalInfo(
     @Param('id', ParseUUIDPipe) userId: string,
@@ -76,7 +76,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Patch('admin-info/:id')
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async updateUserAdminInfo(
     @Param('id', ParseUUIDPipe) userId: string,
@@ -87,7 +87,7 @@ export class UsersController {
 
   @Patch('role/:id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   async updateUserRole(
     @Param('id', ParseUUIDPipe) userId: string,
     @Body('role') newRole: Role,
