@@ -145,6 +145,21 @@ export class LoginUserDto extends PickType(CreateUserDto, [
   'password',
 ]) {}
 
+//! Agregar Email aca? Agregar contraseña aca? o manejar aparte en un endpoint distinto sin dto?
+export class UpdateUserPersonalInfoDto extends PartialType(
+  PickType(CreateUserDto, [
+    'name',
+    'address',
+    'phone',
+    'country',
+    'city',
+  ] as const),
+) {}
+
+export class updateUserAdminInfoDto extends PartialType(
+  PickType(CreateUserDto, ['name', 'email'] as const),
+) {}
+
 export class Auth0Dto {
   @ApiProperty({
     description: 'Id de usuario de google y auth0',
