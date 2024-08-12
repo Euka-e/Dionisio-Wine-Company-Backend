@@ -1,5 +1,4 @@
 import { UsersRepository } from 'src/modules/users/users.repository';
-import { CartService } from './../cart/cart.service';
 import {
   Controller,
   Post,
@@ -11,6 +10,7 @@ import {
   BadRequestException,
   ParseUUIDPipe,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -18,6 +18,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { AuthGuard } from '../auth/guards/authorization.guard';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Role } from '../users/dto/roles.enum';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -51,12 +52,21 @@ export class OrdersController {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     try {
       return await this.ordersService.createOrderFromCart(createOrderDto, userId);
     } catch (error) {
       throw new BadRequestException('Error creating order');
     }
+  }
+
+  @Put('orderSatus/:id')
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @UseGuards(AuthGuard, RolesGuard)
+  async updateOrderStatus(
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @Body() order: UpdateOrderDto
+  ) {
+    return await this.ordersService.updateOrderStatus(order);
   }
 
   @Roles(Role.Admin, Role.SuperAdmin)

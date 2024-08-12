@@ -7,6 +7,7 @@ import { OrderStatus } from './entities/order.status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Product } from '../products/entities/product.entity';
 import { Repository, DataSource } from 'typeorm';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrdersRepository {
@@ -65,7 +66,6 @@ export class OrdersRepository {
         }
       }
 
-      // Crear la orden
       const order = new Order();
       order.user = findUser;
       order.status = OrderStatus.PENDING;
@@ -100,6 +100,10 @@ export class OrdersRepository {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async updateOrderStatus(order: UpdateOrderDto) {
+    return await this.orderRepository.update({ id: order.orderId }, { status: order.status });
   }
 
   async deleteOrdersFromUser(userId: string) {
