@@ -15,6 +15,10 @@ export class OrdersRepository {
     @Inject(DataSource) private readonly dataSource: DataSource,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(OrderDetail)
+    private readonly orderDetailRepository: Repository<OrderDetail>,
     private readonly usersRepository: UsersRepository,
   ) { }
 
@@ -39,66 +43,39 @@ export class OrdersRepository {
       delete sanitizedUser.address;
       delete sanitizedUser.city;
       delete sanitizedUser.date;
+      delete sanitizedUser.phone;
       return { ...order, user: sanitizedUser };
     });
     return sanitizedOrders;
   }
 
   async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
     try {
       const findUser = await this.usersRepository.getUserById(userId);
       if (!findUser) {
         throw new Error('User not found');
       }
-
-      for (const item of cartItems.cartItems) {
-        const findProduct = await queryRunner.manager.findOne(Product, { where: { productId: item.productId } });
-        if (!findProduct) {
-          throw new Error(`Product with ID ${item.productId} not found`);
-        }
-        if (findProduct.stock < item.quantity) {
-          throw new Error(`Insufficient stock for product with ID ${item.productId}`);
-        }
-      }
-
       const order = new Order();
       order.user = findUser;
       order.status = OrderStatus.PENDING;
       order.price = cartItems.price;
-
-      const savedOrder = await queryRunner.manager.save(Order, order);
-
+      const savedOrder = await this.orderRepository.save(order);
       const orderDetails = await Promise.all(cartItems.cartItems.map(async (item) => {
         const orderDetail = new OrderDetail();
         orderDetail.order = savedOrder;
-        const findProduct = await queryRunner.manager.findOne(Product, { where: { productId: item.productId } });
+        const findProduct = await this.productRepository.findOneBy({ productId: item.productId });
         orderDetail.product = findProduct;
         orderDetail.quantity = item.quantity;
         orderDetail.price = item.price;
         orderDetail.total = item.quantity * item.price;
-
-        await queryRunner.manager.update(Product, { productId: item.productId }, { stock: findProduct.stock - item.quantity });
-
         return orderDetail;
       }));
-
-      await queryRunner.manager.save(OrderDetail, orderDetails);
-
-      /* await this.cartRepository.clearCart(userId); */ //!Activar esto una vez implementado el carrito en el front
-
-      await queryRunner.commitTransaction();
+      await this.orderDetailRepository.save(orderDetails);
+      /* await this.cartRepository.clearCart(userId); */
       return savedOrder;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      console.log(error.message);
+      console.log(error.message)
       throw new BadRequestException('Error creating order');
-    } finally {
-      await queryRunner.release();
     }
   }
 
