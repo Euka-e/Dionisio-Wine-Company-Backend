@@ -3,25 +3,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoryRepository {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) { }
+  ) {}
 
   async findAll(page: number = 1, limit: number = 10) {
     const [categories, total] = await this.categoryRepository.findAndCount({
       take: limit,
-      skip: (page - 1) * limit
-    })
+      skip: (page - 1) * limit,
+    });
     return {
       data: categories,
       total,
       page,
       lastPage: Math.ceil(total / limit),
-    }
+    };
   }
 
   async findOne(category_id: string) {
@@ -32,17 +33,28 @@ export class CategoryRepository {
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
-    createCategoryDto.name = createCategoryDto.name.charAt(0).toUpperCase() + createCategoryDto.name.slice(1).toLowerCase();
+    createCategoryDto.name =
+      createCategoryDto.name.charAt(0).toUpperCase() +
+      createCategoryDto.name.slice(1).toLowerCase();
 
-    const existingCategory = await this.categoryRepository.findOne({ where: { name: createCategoryDto.name } });
+    const existingCategory = await this.categoryRepository.findOne({
+      where: { name: createCategoryDto.name },
+    });
     if (existingCategory) {
       throw new ConflictException('Category already exists');
     }
 
-    const category = this.categoryRepository.create({ name: createCategoryDto.name });
+    const category = this.categoryRepository.create({
+      name: createCategoryDto.name,
+    });
     await this.categoryRepository.save(category);
 
     return 'Category successfully added';
+  }
+
+  async update(category_id: string, updateCategoryDto: UpdateCategoryDto) {
+    await this.categoryRepository.update(category_id, updateCategoryDto);
+    return updateCategoryDto;
   }
 
   async delete(category_id: string) {
