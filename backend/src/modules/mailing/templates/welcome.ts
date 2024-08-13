@@ -56,10 +56,10 @@ export const welcomeEmail = `
                   <img src="https://via.placeholder.com/600x200?text=Gracias+por+Registrarse" alt="Gracias por Registrarse">
               </div>
               <div class="content">
-                  <h1>¡Gracias por Registrarte!</h1>
+                  <h1>¡Gracias por Registrarse!</h1>
                   <p>Hola,</p>
-                  <p>Queremos agradecerte por registrarte en nuestra página. Estamos encantados de tenerte con nosotros.</p>
-                  <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en ponerte en contacto con nosotros.</p>
+                  <p>Queremos agradecerte por haberte registrado en nuestra página. Estamos encantados de tenerte con nosotros.</p>
+                  <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en ponerte en contacto.</p>
                   <p>¡Bienvenido a nuestra comunidad!</p>
               </div>
               <div class="footer">
