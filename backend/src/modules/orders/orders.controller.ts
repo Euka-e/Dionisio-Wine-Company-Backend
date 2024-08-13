@@ -59,11 +59,10 @@ export class OrdersController {
     }
   }
 
-  @Put('orderSatus/:id')
+  @Put('orderSatus')
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async updateOrderStatus(
-    @Param('userId', ParseUUIDPipe) userId: string,
     @Body() order: UpdateOrderDto
   ) {
     return await this.ordersService.updateOrderStatus(order);
