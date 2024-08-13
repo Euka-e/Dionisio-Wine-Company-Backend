@@ -55,6 +55,8 @@ export class OrdersRepository {
   async createOrderFromCart(cartItems: CreateOrderDto, userId: string) {
     try {
       const findUser = await this.usersRepository.getUserById(userId);
+      const { email } = findUser;
+
       if (!findUser) {
         throw new Error('User not found');
       }
@@ -76,9 +78,7 @@ export class OrdersRepository {
           orderDetail.total = item.quantity * item.price;
 
           try {
-            await this.mailingService.sendPurchaseConfirmationEmail(
-              findUser.email,
-            );
+            await this.mailingService.sendPurchaseConfirmationEmail(email);
             console.log('Correo de bienvenida enviado correctamente');
           } catch (mailError) {
             console.error('Error al enviar el correo:', mailError.message);
