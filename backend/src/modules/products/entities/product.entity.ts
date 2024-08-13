@@ -60,10 +60,14 @@ export class Product {
     description: 'Type of the product (Cepa)',
     example: 'wine',
   })
+
+  //! ACA FALTA CEPA, agregar?
   @ApiProperty({
     description: 'Store where the product is available (Bodega)',
     example: 'Main Store',
   })
+
+  //! ESTO ES BODEGA
   @Column({ type: 'text', nullable: false })
   store: string;
 
@@ -93,5 +97,4 @@ export class Product {
 
   @ManyToMany(() => CartDetail, (cartDetail) => cartDetail.items)
   cartDetail?: CartDetail[];
-
 }

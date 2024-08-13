@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { updateProductDto } from './dto/update-product.dto';
 import { ProductsRepository } from './products.repository';
 import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly productsRepository: ProductsRepository) { }
+  constructor(private readonly productsRepository: ProductsRepository) {}
 
   findAll(page: number = 1, limit: number = 10) {
     return this.productsRepository.findAll(page, limit);
@@ -23,7 +23,7 @@ export class ProductsService {
     return this.productsRepository.restock(product_id, stock);
   }
 
-  update(product_id: string, updateProductDto: UpdateProductDto) {
+  update(product_id: string, updateProductDto: updateProductDto) {
     return this.productsRepository.update(product_id, updateProductDto);
   }
 

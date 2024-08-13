@@ -11,7 +11,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { updateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/create-product.dto';
 import { AuthGuard } from '../auth/guards/authorization.guard';
@@ -51,7 +51,7 @@ export class ProductsController {
   @UseGuards(AuthGuard, RolesGuard)
   update(
     @Param('productId', ParseUUIDPipe) product_id: string,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body() updateProductDto: updateProductDto,
   ) {
     return this.productsService.update(product_id, updateProductDto);
   }
