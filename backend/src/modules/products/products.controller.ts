@@ -46,12 +46,13 @@ export class ProductsController {
     return this.productsService.create(product);
   }
 
+  //!Modificado el tipo de dato a ANY momentaneamente
   @Patch(':productId/update')
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   update(
     @Param('productId', ParseUUIDPipe) product_id: string,
-    @Body() updateProductDto: updateProductDto,
+    @Body() updateProductDto: any,
   ) {
     return this.productsService.update(product_id, updateProductDto);
   }

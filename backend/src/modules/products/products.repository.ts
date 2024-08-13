@@ -87,7 +87,7 @@ export class ProductsRepository {
       return `Failed to update stock for product with id ${productId}.`;
     }
   }
-  async update(product_id: string, updateProductDto: updateProductDto) {
+  async update(product_id: string, updateProductDto: any) {
     try {
       await this.productsRepository.update(product_id, updateProductDto);
       return updateProductDto;

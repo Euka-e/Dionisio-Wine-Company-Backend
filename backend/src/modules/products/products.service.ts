@@ -23,7 +23,7 @@ export class ProductsService {
     return this.productsRepository.restock(product_id, stock);
   }
 
-  update(product_id: string, updateProductDto: updateProductDto) {
+  update(product_id: string, updateProductDto: any) {
     return this.productsRepository.update(product_id, updateProductDto);
   }
 
