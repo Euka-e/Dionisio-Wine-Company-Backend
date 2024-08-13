@@ -6,14 +6,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { updateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-  ) { }
+  ) {}
 
   async findAll(page: number = 1, limit: number = 10) {
     const [products, total] = await this.productsRepository.findAndCount({
@@ -66,7 +66,9 @@ export class ProductsRepository {
 
   async restock(productId: string, stock?: number) {
     try {
-      const product = await this.productsRepository.findOne({ where: { productId } });
+      const product = await this.productsRepository.findOne({
+        where: { productId },
+      });
 
       if (!product) {
         throw new NotFoundException(`Product with id ${productId} not found`);
@@ -78,13 +80,26 @@ export class ProductsRepository {
 
       return `Product has been updated to stock level ${product.stock}`;
     } catch (error) {
-      console.error(`Error updating stock for product with id ${productId}:`, error);
+      console.error(
+        `Error updating stock for product with id ${productId}:`,
+        error,
+      );
       return `Failed to update stock for product with id ${productId}.`;
     }
   }
-  async update(product_id: string, updateProductDto: UpdateProductDto) {
-    await this.productsRepository.update(product_id, updateProductDto);
-    return 'Updated Product';
+  async update(product_id: string, updateProductDto: updateProductDto) {
+    try {
+      await this.productsRepository.update(product_id, updateProductDto);
+      return updateProductDto;
+    } catch (error) {
+      console.error(
+        `Error actualizando el producto con id ${product_id}:`,
+        error,
+      );
+      throw new InternalServerErrorException(
+        `No se pudo actualizar el producto con el id ${product_id}.`,
+      );
+    }
   }
 
   async remove(product_id: string) {
