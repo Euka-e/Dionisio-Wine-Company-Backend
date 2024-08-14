@@ -16,9 +16,11 @@ import { UsersRepository } from '../users/users.repository';
 import { MailingService } from '../mailing/mailing.service';
 import { conectionSource } from '../../config/typeorm';
 import { DataSource } from 'typeorm';
+import { MailingModule } from '../mailing/mailing.module';
 
 @Module({
   imports: [
+    MailingModule,
     TypeOrmModule.forRoot(conectionSource.options),
     TypeOrmModule.forFeature([
       Order,
@@ -29,7 +31,7 @@ import { DataSource } from 'typeorm';
       CartDetail,
       Cart,
       CartItem,
-      CartDetail
+      CartDetail,
     ]),
   ],
   controllers: [OrdersController],
@@ -40,8 +42,8 @@ import { DataSource } from 'typeorm';
     CartRepository,
     UsersRepository,
     MailingService,
-    { provide: DataSource, useValue: conectionSource }
+    { provide: DataSource, useValue: conectionSource },
   ],
   exports: [OrdersRepository],
 })
-export class OrdersModule { }
+export class OrdersModule {}
