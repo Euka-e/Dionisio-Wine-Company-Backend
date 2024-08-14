@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import * as mailTemplates from './templates';
 import * as dotenv from 'dotenv';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class MailingService {
@@ -38,6 +39,24 @@ export class MailingService {
   }
 
   async sendPurchaseConfirmationEmail(to: string): Promise<void> {
+    const mailOptions = {
+      from: '"Dionisio" <' + process.env.NODEMAILER_EMAIL_USER + '>',
+      to,
+      subject: 'Bienvenido a nuestro servicio',
+      html: mailTemplates.purchaseEmail,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log('Correo de bienvenida enviado a: ' + to);
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      throw new Error('Error al enviar el correo');
+    }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async sendWeMissYouEmail(to: string): Promise<void> {
     const mailOptions = {
       from: '"Dionisio" <' + process.env.NODEMAILER_EMAIL_USER + '>',
       to,
