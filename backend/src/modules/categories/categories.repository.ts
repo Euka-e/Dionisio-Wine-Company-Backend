@@ -12,17 +12,8 @@ export class CategoryRepository {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async findAll(page: number = 1, limit: number = 10) {
-    const [categories, total] = await this.categoryRepository.findAndCount({
-      take: limit,
-      skip: (page - 1) * limit,
-    });
-    return {
-      data: categories,
-      total,
-      page,
-      lastPage: Math.ceil(total / limit),
-    };
+  async findAll() {
+    return this.categoryRepository.find();
   }
 
   async findOne(category_id: string) {

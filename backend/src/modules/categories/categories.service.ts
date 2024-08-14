@@ -7,8 +7,8 @@ import { CategoryRepository } from './categories.repository';
 export class CategoriesService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  findAll(page: number = 1, limit: number = 10) {
-    return this.categoryRepository.findAll(page, limit);
+  findAll() {
+    return this.categoryRepository.findAll();
   }
 
   findOne(category_id: string) {
