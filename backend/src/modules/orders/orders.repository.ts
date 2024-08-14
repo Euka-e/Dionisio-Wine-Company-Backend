@@ -61,13 +61,6 @@ export class OrdersRepository {
         throw new Error('User not found');
       }
 
-      try {
-        await this.mailingService.sendPurchaseConfirmationEmail(email);
-        console.log('Correo de bienvenida enviado correctamente');
-      } catch (mailError) {
-        console.error('Error al enviar el correo:', mailError.message);
-      }
-
       const order = new Order();
       order.user = findUser;
       order.status = OrderStatus.PENDING;
@@ -88,7 +81,16 @@ export class OrdersRepository {
           return orderDetail;
         }),
       );
+
       await this.orderDetailRepository.save(orderDetails);
+
+      try {
+        await this.mailingService.sendPurchaseConfirmationEmail(email);
+        console.log('Correo de bienvenida enviado correctamente');
+      } catch (mailError) {
+        console.error('Error al enviar el correo:', mailError.message);
+      }
+
       /* await this.cartRepository.clearCart(userId); */
       return savedOrder;
     } catch (error) {
