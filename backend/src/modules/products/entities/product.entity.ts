@@ -1,6 +1,6 @@
 import { Category } from '../../categories/entities/category.entity';
 import { OrderDetail } from '../../orders/entities/orderdetail.entity';
-import { Offer } from '../../offers/entities/offer.entity';
+//import { Offer } from '../../offers/entities/offer.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -74,12 +74,12 @@ export class Product {
   @Column('boolean', { default: true })
   isActive?: boolean;
 
-  @ApiProperty({
+/*   @ApiProperty({
     description: 'Offer associated with the product',
     type: () => Offer,
   })
   @OneToOne(() => Offer, (offer) => offer.product)
-  offers?: Offer;
+  offers?: Offer; */
 
   @ApiProperty({
     description: 'Category of the product',

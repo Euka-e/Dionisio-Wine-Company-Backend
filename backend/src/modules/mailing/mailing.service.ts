@@ -57,6 +57,7 @@ export class MailingService {
     }
   }
 
+
   // @Cron('*/1 * * * *')
   // async sendWeeklyEmailToAllUsers() {
   //   try {
@@ -64,6 +65,7 @@ export class MailingService {
   //     const limit = 1000;
   //     const result: any[][] = await this.usersService.getUsers(page, limit);
   //     const allUsers: User[] = result.flat(); //! Aplana la matriz bidimensional, debido a que el getUsers retorna Users[][]
+
 
   //     for (const user of allUsers) {
   //       await this.sendWeMissYouEmail(user.email);
