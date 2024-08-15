@@ -34,11 +34,11 @@ export class UsersController {
   @Get()
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
-  async getUsers(@Query('page') page: string, @Query('limit') limit: string) {
-    !page ? (page = '1') : page;
-    !limit ? (limit = '5') : limit;
-    if (page && limit)
-      return this.usersService.getUsers(Number(page), Number(limit));
+  async getUsers(/* @Query('page') page: string, @Query('limit') limit: string */) {
+    /* page ? (page = '1') : page;
+    limit ? (limit = '5') : limit; */
+    /* if (page && limit) */
+      return this.usersService.getUsers(/* Number(page), Number(limit) */);
   }
 
   @ApiBearerAuth()

@@ -14,8 +14,8 @@ import { Role } from './dto/roles.enum';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async getUsers(page: number, limit: number) {
-    return await this.usersRepository.getUsers(page, limit);
+  async getUsers(/* page: number, limit: number */) {
+    return await this.usersRepository.getUsers(/* page, limit */);
   }
 
   async getUserById(userId: string) {
