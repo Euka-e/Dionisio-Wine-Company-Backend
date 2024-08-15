@@ -10,7 +10,7 @@ import { User } from '../users/entities/user.entity';
 export class MailingService {
   private transporter;
 
-  constructor(private readonly usersService: UsersService) {
+  constructor(/* private readonly usersService: UsersService */) {
     this.transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
@@ -57,36 +57,36 @@ export class MailingService {
     }
   }
 
-  @Cron('*/1 * * * *')
-  async sendWeeklyEmailToAllUsers() {
-    try {
-      const page = 1;
-      const limit = 1000;
-      const result: any[][] = await this.usersService.getUsers(page, limit);
-      const allUsers: User[] = result.flat(); //! Aplana la matriz bidimensional, debido a que el getUsers retorna Users[][]
+  // @Cron('*/1 * * * *')
+  // async sendWeeklyEmailToAllUsers() {
+  //   try {
+  //     const page = 1;
+  //     const limit = 1000;
+  //     const result: any[][] = await this.usersService.getUsers(page, limit);
+  //     const allUsers: User[] = result.flat(); //! Aplana la matriz bidimensional, debido a que el getUsers retorna Users[][]
 
-      for (const user of allUsers) {
-        await this.sendWeMissYouEmail(user.email);
-      }
-    } catch (error) {
-      console.error('Error al enviar correos semanales:', error);
-    }
-  }
+  //     for (const user of allUsers) {
+  //       await this.sendWeMissYouEmail(user.email);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error al enviar correos semanales:', error);
+  //   }
+  // }
 
-  async sendWeMissYouEmail(to: string): Promise<void> {
-    const mailOptions = {
-      from: '"Dionisio" <' + process.env.NODEMAILER_EMAIL_USER + '>',
-      to,
-      subject: 'Te extrañamos :(',
-      html: mailTemplates.missYouEmail,
-    };
+  // async sendWeMissYouEmail(to: string): Promise<void> {
+  //   const mailOptions = {
+  //     from: '"Dionisio" <' + process.env.NODEMAILER_EMAIL_USER + '>',
+  //     to,
+  //     subject: 'Te extrañamos :(',
+  //     html: mailTemplates.missYouEmail,
+  //   };
 
-    try {
-      await this.transporter.sendMail(mailOptions);
-      console.log('Correo semanal enviado a:', to);
-    } catch (error) {
-      console.error('Error al enviar el correo a:', to, error);
-      throw new Error('Error al enviar el correo');
-    }
-  }
+  //   try {
+  //     await this.transporter.sendMail(mailOptions);
+  //     console.log('Correo semanal enviado a:', to);
+  //   } catch (error) {
+  //     console.error('Error al enviar el correo a:', to, error);
+  //     throw new Error('Error al enviar el correo');
+  //   }
+  // }
 }
