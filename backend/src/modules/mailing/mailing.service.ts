@@ -57,7 +57,7 @@ export class MailingService {
     }
   }
 
-  @Cron('0 0 * * 0')
+  @Cron('*/1 * * * *')
   async sendWeeklyEmailToAllUsers() {
     try {
       const page = 1;
