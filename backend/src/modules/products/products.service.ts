@@ -7,8 +7,8 @@ import { Product } from './entities/product.entity';
 export class ProductsService {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  findAll(page: number = 1, limit: number = 10) {
-    return this.productsRepository.findAll(page, limit);
+  findAll(/* page: number = 1, limit: number = 10 */) {
+    return this.productsRepository.findAll(/* page, limit */);
   }
 
   findOne(product_id: string) {
