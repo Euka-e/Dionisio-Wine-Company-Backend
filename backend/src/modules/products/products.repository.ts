@@ -15,17 +15,17 @@ export class ProductsRepository {
     private readonly productsRepository: Repository<Product>,
   ) {}
 
-  async findAll(page: number = 1, limit: number = 10) {
+  async findAll(/* page: number = 1, limit: number = 10 */) {
     const [products, total] = await this.productsRepository.findAndCount({
       relations: { category: true },
-      take: limit,
-      skip: (page - 1) * limit,
+      /* take: limit,
+      skip: (page - 1) * limit, */
     });
     return {
       data: products,
       total,
-      page,
-      lastPage: Math.ceil(total / limit),
+      /* page,
+      lastPage: Math.ceil(total / limit), */
     };
   }
 

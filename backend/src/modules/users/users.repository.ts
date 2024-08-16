@@ -27,12 +27,12 @@ export class UsersRepository {
     private readonly mailingService: MailingService,
   ) {}
 
-  async getUsers(page: number, limit: number) {
+  async getUsers(/* page: number, limit: number */) {
     try {
-      const skip = (page - 1) * limit;
+      /* const skip = (page - 1) * limit; */
       const users = await this.usersRepository.find({
-        take: limit,
-        skip: skip,
+        /* take: limit,
+        skip: skip, */
       });
       const passwordlessUsers = users.map((user) => {
         const usersArray = [];

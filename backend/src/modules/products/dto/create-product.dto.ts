@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsNumber, IsPositive, IsOptional, IsUrl, IsBoolean } from 'class-validator';
 import { Category } from '../../categories/entities/category.entity';
-import { Offer } from '../../offers/entities/offer.entity';
+//import { Offer } from '../../offers/entities/offer.entity';
 import { OrderDetail } from '../../orders/entities/orderdetail.entity';
 
 export class CreateProductDto {
@@ -63,12 +63,12 @@ export class CreateProductDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiProperty({
+/*   @ApiProperty({
     description: 'Offer associated with the product',
     type: () => Offer
   })
   @IsOptional()
-  offers?: Offer;
+  offers?: Offer; */
 
   @ApiProperty({
     description: 'Category of the product',
