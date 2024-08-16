@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing/mailing.service';
 import { Role } from './dto/roles.enum';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UsersRepository {
@@ -214,5 +215,25 @@ export class UsersRepository {
   async updateUserAdminInfo(userId: string, user: updateUserAdminInfoDto) {
     await this.usersRepository.update(userId, user);
     return user;
+  }
+
+  //! DEJAR COMENTADO / DESACTIVADO PARA NO HACER SPAM
+  //@Cron('0 0 * * 0')
+  async sendWeeklyEmailToAllUsers() {
+    console.log('Mailing Automatico Semanal Iniciado...');
+
+    try {
+      const page = 1;
+      const limit = 1000;
+      const result: any[][] = await this.getUsers(page, limit);
+      const allUsers: User[] = result.flat(); //! Aplana la matriz bidimensional, debido a que el getUsers retorna Users[][]
+
+      for (const user of allUsers) {
+        await this.mailingService.sendWeMissYouEmail(user.email);
+        console.log(`Correos enviadado a ${user.email} correctamente`);
+      }
+    } catch (error) {
+      console.error('Error al enviar correos semanales:', error);
+    }
   }
 }
