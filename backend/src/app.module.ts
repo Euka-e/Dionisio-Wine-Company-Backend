@@ -13,6 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { CartModule } from './modules/cart/cart.module';
 import { MailingModule } from './modules/mailing/mailing.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MailingModule } from './modules/mailing/mailing.module';
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
+    ScheduleModule.forRoot(),
     ProductsModule,
     UsersModule,
     AuthModule,
@@ -48,4 +50,4 @@ import { MailingModule } from './modules/mailing/mailing.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
