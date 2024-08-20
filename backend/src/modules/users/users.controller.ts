@@ -2,15 +2,11 @@ import {
   Body,
   Controller,
   Get,
-  Post,
-  Put,
   Param,
   Delete,
-  Query,
   UseGuards,
   ParseUUIDPipe,
   Patch,
-  ForbiddenException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
@@ -31,33 +27,30 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @ApiBearerAuth()
-@ApiOperation({
-  summary: 'Retrieve a paginated list of users',
-  description: `This endpoint retrieves a list of users with pagination support.
+  @ApiOperation({
+    summary: 'Retrieve a paginated list of users',
+    description: `This endpoint retrieves a list of users with pagination support.
     - Query parameters control pagination.
     - The response will include user details such as name, email, and roles.
     - Default values are page 1 and limit 5 if not provided.`,
-})
-@ApiQuery({
-  name: 'page',
-  description: 'Page number for pagination',
-  example: '1',
-  required: false,
-})
-@ApiQuery({
-  name: 'limit',
-  description: 'Number of users per page',
-  example: '5',
-  required: false,
-})
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    example: '1',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of users per page',
+    example: '5',
+    required: false,
+  })
   @Get()
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
-  async getUsers(/* @Query('page') page: string, @Query('limit') limit: string */) {
-    /* page ? (page = '1') : page;
-    limit ? (limit = '5') : limit; */
-    /* if (page && limit) */
-      return this.usersService.getUsers(/* Number(page), Number(limit) */);
+  async getUsers() {
+    return this.usersService.getUsers();
   }
 
   @ApiBearerAuth()
@@ -82,22 +75,22 @@ export class UsersController {
   //! ESTE ENDPOINT ACTUALIZA TODOS LOS DATOS DE USER
   //! habria que partirlo en distintos endpoints para mas control
   @ApiBearerAuth()
-@ApiOperation({
-  summary: 'Update all user details',
-  description: `This endpoint updates all details of a user.
+  @ApiOperation({
+    summary: 'Update all user details',
+    description: `This endpoint updates all details of a user.
     - It requires authentication and authorization with either Admin or SuperAdmin role.
     - The request body should include all user details such as name, email, roles, etc.
     - The user ID is provided as a URL parameter.`,
-})
-@ApiParam({
-  name: 'id',
-  description: 'The unique ID of the user to update',
-  example: '123e4567-e89b-12d3-a456-426614174000',
-})
-@ApiBody({
-  description: 'User details to update',
-  type: UpdateUserDto,
-})
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique ID of the user to update',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiBody({
+    description: 'User details to update',
+    type: UpdateUserDto,
+  })
   @Patch(':id')
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
@@ -110,22 +103,22 @@ export class UsersController {
 
   //! ESTE ENDPOINT SE PUEDE ABREVIAR A UpdateUserInfo
   @ApiBearerAuth()
-@ApiOperation({
-  summary: 'Update personal information of a user',
-  description: `This endpoint updates personal information of a user.
+  @ApiOperation({
+    summary: 'Update personal information of a user',
+    description: `This endpoint updates personal information of a user.
     - It requires authentication and authorization with User, Admin, or SuperAdmin role.
     - The request body should include personal information to update such as name and contact details.
     - The user ID is provided as a URL parameter.`,
-})
-@ApiParam({
-  name: 'id',
-  description: 'The unique ID of the user to update',
-  example: '123e4567-e89b-12d3-a456-426614174000',
-})
-@ApiBody({
-  description: 'Personal information to update',
-  type: UpdateUserPersonalInfoDto,
-})
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique ID of the user to update',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiBody({
+    description: 'Personal information to update',
+    type: UpdateUserPersonalInfoDto,
+  })
   @Patch('info/:id')
   @Roles(Role.User, Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
@@ -137,22 +130,22 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-@ApiOperation({
-  summary: 'Update administrative information of a user',
-  description: `This endpoint updates administrative information of a user, such as roles and permissions.
+  @ApiOperation({
+    summary: 'Update administrative information of a user',
+    description: `This endpoint updates administrative information of a user, such as roles and permissions.
     - It requires authentication and authorization with Admin or SuperAdmin role.
     - The request body should include administrative details to update.
     - The user ID is provided as a URL parameter.`,
-})
-@ApiParam({
-  name: 'id',
-  description: 'The unique ID of the user to update',
-  example: '123e4567-e89b-12d3-a456-426614174000',
-})
-@ApiBody({
-  description: 'Administrative information to update',
-  type: updateUserAdminInfoDto,
-})@Patch('admin-info/:id')
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique ID of the user to update',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiBody({
+    description: 'Administrative information to update',
+    type: updateUserAdminInfoDto,
+  }) @Patch('admin-info/:id')
   @Roles(Role.Admin, Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async updateUserAdminInfo(
@@ -163,33 +156,33 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-@ApiOperation({
-  summary: 'Update the role of a user',
-  description: `This endpoint updates the role of a user.
+  @ApiOperation({
+    summary: 'Update the role of a user',
+    description: `This endpoint updates the role of a user.
     - It requires authentication and authorization with Admin or SuperAdmin role.
     - The request body should include the new role for the user.
     - The user ID is provided as a URL parameter.`,
-})
-@ApiParam({
-  name: 'id',
-  description: 'The unique ID of the user whose role is to be updated',
-  example: '123e4567-e89b-12d3-a456-426614174000',
-})
-@ApiBody({
-  description: 'The new role to assign to the user',
-  schema: {
-    type: 'object',
-    properties: {
-      role: {
-        type: 'string',
-        enum: Object.values(Role),
-        example: Role.Admin,
-        description: 'The new role for the user',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique ID of the user whose role is to be updated',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiBody({
+    description: 'The new role to assign to the user',
+    schema: {
+      type: 'object',
+      properties: {
+        role: {
+          type: 'string',
+          enum: Object.values(Role),
+          example: Role.Admin,
+          description: 'The new role for the user',
+        },
       },
+      required: ['role'],
     },
-    required: ['role'],
-  },
-})
+  })
   @Patch('role/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
@@ -215,17 +208,17 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-@ApiOperation({
-  summary: 'Delete a user',
-  description: `This endpoint deletes a user from the system.
+  @ApiOperation({
+    summary: 'Delete a user',
+    description: `This endpoint deletes a user from the system.
     - It requires authentication and authorization with SuperAdmin role.
     - The user ID is provided as a URL parameter.`,
-})
-@ApiParam({
-  name: 'id',
-  description: 'The unique ID of the user to delete',
-  example: '123e4567-e89b-12d3-a456-426614174000',
-})
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique ID of the user to delete',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
   @ApiBearerAuth()
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
