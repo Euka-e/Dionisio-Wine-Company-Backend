@@ -14,7 +14,10 @@ dotenvConfig({ path: '.env.development' });
 const config = {
     type: 'postgres',
     port: process.env.DB_PORT,
-    url: process.env.DATABASE_URL,
+    /* url: process.env.DATABASE_URL, */
+    host: process.env.DATABASE_HOST,
+    username: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     entities: [User, Product, Order, OrderDetail, Category, Cart, CartDetail],
     migrations: ['dist/migrations/*{.ts,.js}'],
