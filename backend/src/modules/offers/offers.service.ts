@@ -1,29 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
 import { OffersRepository } from './offers.repository';
+import { ApplyDiscountCodeDto } from './dto/applyCode.dto';
+import { GenerateDiscountCodeDto } from './dto/discountCode.dto';
 
 @Injectable()
 export class OffersService {
-  constructor(private offerRepository:OffersRepository) {}
-  
-  create(createOfferDto: CreateOfferDto) {
-    return this.offerRepository.create(createOfferDto) ;
+  constructor(private offerRepository: OffersRepository) { }
+
+  generateCode(dto: GenerateDiscountCodeDto) {
+    return this.offerRepository.generateCode(dto);
   }
 
-  findAll() {
-    return this.offerRepository.findAll();
-  }
-
-  findOne(id: string) {
-    return this.offerRepository.findOne(id);
-  }
-
-  update(id: string, updateOfferDto: UpdateOfferDto) {
-    return this.offerRepository.update(id, updateOfferDto);
-  }
-
-  delete(id: string) {
-    return this.offerRepository.delete(id);
+  applyCode(dto: ApplyDiscountCodeDto) {
+    return this.offerRepository.applyCode(dto);
   }
 }

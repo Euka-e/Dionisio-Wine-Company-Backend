@@ -7,23 +7,23 @@ import { CategoryRepository } from './categories.repository';
 export class CategoriesService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  findAll(page: number, limit: number) {
-    return this.categoryRepository.findAll(page, limit);
+  findAll() {
+    return this.categoryRepository.findAll();
   }
 
   findOne(category_id: string) {
     return this.categoryRepository.findOne(category_id);
   }
+
   create(createCategoryDto: CreateCategoryDto) {
     return this.categoryRepository.create(createCategoryDto);
   }
 
-  //? Posiblemente este endpoint sea redundante/inutil
   update(category_id: string, updateCategoryDto: UpdateCategoryDto) {
     return this.categoryRepository.update(category_id, updateCategoryDto);
   }
 
   remove(category_id: string) {
-    return this.categoryRepository.remove(category_id);
+    return this.categoryRepository.delete(category_id);
   }
 }

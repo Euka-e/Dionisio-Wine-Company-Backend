@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+/* import { ApiProperty } from "@nestjs/swagger";
 import { Category } from "src/modules/categories/entities/category.entity";
 import { Product } from "src/modules/products/entities/product.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
@@ -20,7 +20,7 @@ export class Offer {
     })
     percentage: number
 
-    @Column({ type: 'date', nullable: false })
+    @Column({ type: 'date', nullable: true })
     @ApiProperty({ 
         description: 'Fecha de expiración de la oferta', 
         example: '2024-12-31' 
@@ -39,3 +39,4 @@ export class Offer {
     })
     category: Category;
 }
+ */

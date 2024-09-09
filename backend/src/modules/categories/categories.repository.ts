@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
@@ -11,14 +11,9 @@ export class CategoryRepository {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
   ) {}
-  async findAll(page: number, limit: number) {
-    let categories = await this.categoryRepository.find();
 
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    categories = categories.slice(start, end);
-
-    return categories;
+  async findAll() {
+    return this.categoryRepository.find();
   }
 
   async findOne(category_id: string) {
@@ -29,27 +24,31 @@ export class CategoryRepository {
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
-    await this.categoryRepository
+    createCategoryDto.name =
+      createCategoryDto.name.charAt(0).toUpperCase() +
+      createCategoryDto.name.slice(1).toLowerCase();
 
-      .createQueryBuilder()
-      .insert()
-      .into(Category)
-      .values({ name: createCategoryDto.name })
-      .orIgnore()
-      .execute();
+    const existingCategory = await this.categoryRepository.findOne({
+      where: { name: createCategoryDto.name },
+    });
+    if (existingCategory) {
+      throw new ConflictException('Category already exists');
+    }
 
-    return 'Categorias agregadas exitosamente';
+    const category = this.categoryRepository.create({
+      name: createCategoryDto.name,
+    });
+    await this.categoryRepository.save(category);
+
+    return 'Category successfully added';
   }
 
-  //? Posiblemente este endpoint sea redundante/inutil
-  update(category_id: string, updateCategoryDto: UpdateCategoryDto) {
-    this.categoryRepository.update(category_id, updateCategoryDto);
-    return 'Categoria Actualizado';
+  async update(category_id: string, updateCategoryDto: UpdateCategoryDto) {
+    await this.categoryRepository.update(category_id, updateCategoryDto);
+    return updateCategoryDto;
   }
 
-  //? verificar si no causa problema el metodo DELETE en vez de REMOVE
-  remove(category_id: string) {
-    this.categoryRepository.delete(category_id);
-    return 'Categoria Eliminada';
+  async delete(category_id: string) {
+    return await this.categoryRepository.delete({ categoryId: category_id });
   }
 }

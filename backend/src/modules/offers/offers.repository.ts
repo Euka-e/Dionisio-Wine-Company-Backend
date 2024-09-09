@@ -1,118 +1,45 @@
-import { Product } from "../products/entities/product.entity";
-import { Offer } from "./entities/offer.entity";
 import { Repository } from "typeorm";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateOfferDto } from "./dto/create-offer.dto";
-import { Category } from "../categories/entities/category.entity";
-import { UpdateOfferDto } from "./dto/update-offer.dto";
+import { DiscountCode } from "./entities/discountCode.entity";
+import { GenerateDiscountCodeDto } from "./dto/discountCode.dto";
+import { ApplyDiscountCodeDto } from "./dto/applyCode.dto";
 
 
 @Injectable()
 export class OffersRepository{
     constructor(
-        @InjectRepository(Offer)
-        private readonly offerRepository: Repository<Offer>,
-        @InjectRepository(Product)
-        private readonly productsRepository: Repository<Product>,
-        @InjectRepository(Category)
-        private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(DiscountCode)
+        private discountCodeRepository: Repository<DiscountCode>,
+    
       ) {}
-    
-      async create(createOfferDto: CreateOfferDto): Promise<Offer[]> {
-        const { percentage, productId, categoryId, dueDate } = createOfferDto;
-    
-        if (!productId && !categoryId) {
-          throw new BadRequestException('Either productId or categoryId must be provided');
-        }
-    
-        const offers: Offer[] = [];
-        if (productId) {
-          const product = await this.productsRepository.findOne({ where: { id: productId } });
-          if (!product) {
-            throw new NotFoundException(`Product with id ${productId} not found`);
-          }
-          product.price = product.price * (1 - percentage / 100);
-          await this.productsRepository.save(product);
-    
-          const offer = this.offerRepository.create({
-            percentage,
-            dueDate,
-            product,
-          });
-          offers.push(await this.offerRepository.save(offer));
-        }
-    
-        if (categoryId) {
-          const category = await this.categoryRepository.findOne({ where: { categoryId } });
-          if (!category) {
-            throw new NotFoundException(`Category with id ${categoryId} not found`);
-          }
-          const products = await this.productsRepository.find({ where: { category } });
-          for (const product of products) {
-            product.price = product.price * (1 - percentage / 100);
-            await this.productsRepository.save(product);
-    
-            const offer = this.offerRepository.create({
-              percentage,
-              dueDate,
-              product,
-            });
-            offers.push(await this.offerRepository.save(offer));
-          }
-        }
-    
-        return offers;
-      }
 
-      async findAll(): Promise<Offer[]> {
-        return await this.offerRepository.find();
-      }
 
-      async findOne(id: string): Promise<Offer> {
-        const offer = await this.offerRepository.findOne({  where: { offerId: id }, relations: ['product', 'category'] });
-        if (!offer) {
-          throw new NotFoundException(`Offer with id ${id} not found`);
-        }
-        return offer;
-      }
 
-      async update(id: string, updateOfferDto: UpdateOfferDto): Promise<Offer> {
-        const offer = await this.offerRepository.findOne({ where: { offerId: id }, relations: ['product', 'category'] });
-        if (!offer) {
-          throw new NotFoundException(`Offer with id ${id} not found`);
+      async generateCode(dto: GenerateDiscountCodeDto): Promise<DiscountCode> {
+        const code = this.generateRandomCode();
+        const discountCode = this.discountCodeRepository.create({ ...dto, code });
+        return await this.discountCodeRepository.save(discountCode);
+      }
+    
+      async applyCode(dto: ApplyDiscountCodeDto): Promise<number> {
+        const discountCode = await this.discountCodeRepository.findOne({ where: { code: dto.code } });
+    
+        if (!discountCode) {
+          throw new NotFoundException('Discount code not found');
         }
     
-        const { percentage, productId, categoryId} = updateOfferDto;
-        if (productId) {
-          const product = await this.productsRepository.findOne({ where: { id: productId } });
-          if (!product) {
-            throw new NotFoundException(`Product with id ${productId} not found`);
-          }
-          product.price = product.price * (1 - percentage / 100);
-          await this.productsRepository.save(product);
+        if (discountCode.used) {
+          throw new BadRequestException('Discount code already used');
         }
     
-        if (categoryId) {
-          const category = await this.categoryRepository.findOne({ where: { categoryId } });
-          if (!category) {
-            throw new NotFoundException(`Category with id ${categoryId} not found`);
-          }
-          const products = await this.productsRepository.find({ where: { category } });
-          for (const product of products) {
-            product.price = product.price * (1 - percentage / 100);
-            await this.productsRepository.save(product);
-          }
-        }
+        discountCode.used = true;
+        await this.discountCodeRepository.save(discountCode);
     
-        Object.assign(offer, updateOfferDto);
-        return await this.offerRepository.save(offer);
+        return discountCode.percentage;
       }
-
-      async delete(id: string): Promise<void> {
-        const result = await this.offerRepository.delete(id);
-        if (result.affected === 0) {
-          throw new NotFoundException(`Offer with id ${id} not found`);
-        }
+    
+      private generateRandomCode(length: number = 8): string {
+        return Math.random().toString(36).substring(2, 2 + length).toUpperCase();
       }
-}
+    }
