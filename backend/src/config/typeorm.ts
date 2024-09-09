@@ -25,7 +25,7 @@ const config = {
     autoLoadEntities: true,
     logging: ['error'],
     synchronize: true,
-    dropSchema: false,
+    dropSchema: true,
     dropDatabase: false
 };
 export const typeOrmConfig = registerAs('typeorm', () => config);
