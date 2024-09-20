@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { updateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsRepository {
