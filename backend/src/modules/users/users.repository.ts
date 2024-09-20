@@ -223,9 +223,7 @@ export class UsersRepository {
     console.log('Mailing Automatico Semanal Iniciado...');
 
     try {
-      const page = 1;
-      const limit = 1000;
-      const result: any[][] = await this.getUsers(page, limit);
+      const result: any[][] = await this.getUsers();
       const allUsers: User[] = result.flat(); //! Aplana la matriz bidimensional, debido a que el getUsers retorna Users[][]
 
       for (const user of allUsers) {
